@@ -1,0 +1,67 @@
+// SPDX-FileCopyrightText: 2026 Łukasz Wrodarczyk
+// SPDX-License-Identifier: MIT
+
+#pragma once
+
+#include <optional>
+#include <toml++/toml.hpp>
+#include <QSize>
+#include <QSizePolicy>
+#include <QString>
+
+// TODO Document std::nullopt return paths
+
+namespace tomlqt {
+// Get std::optional<QSize> from toml::array of toml::value<int64_t> values [width, height].
+// Numbers beyond the first 2 are ignored.
+//
+// Format: toml::array of toml::value<int64_t> values [width, height]
+//
+// Example: foo = [100, 50]
+[[nodiscard]] std::optional<QSize> tryGetQSize(toml::node_view<const toml::node> node);
+
+// Get std::optional<QString> from toml::value<std::string>.
+//
+// Format: toml::value<std::string>
+//
+// Example: foo = "TomlQt"
+[[nodiscard]] std::optional<QString> tryGetQString(toml::node_view<const toml::node> node);
+
+// Get std::optional<Qt::Alignment> from toml::value<std::string>.
+// Case-insensitive.
+//
+// Supports: "Top", "VCenter", "Bottom", "HCenter", "Left", "Right", "Center"
+//
+// Format:
+// a) Pure Qt::Alignment: toml::value<std::string>
+//
+//   Examples:
+//   foo = "top"     // For Qt::Alignment{Qt::AlignTop}
+//   foo = "left"    // For Qt::Alignment{Qt::AlignLeft}
+//   foo = "center"  // For Qt::Alignment{Qt::AlignCenter}
+//   foo = "vcenter" // For Qt::Alignment{Qt::AlignVCenter}
+//
+// b) QFlags: toml::array of toml::value<std::string>
+//
+//
+//   Examples:
+//   foo = ["top", "left"]       // For Qt::Alignment{Qt::AlignTop, Qt::AlignLeft}
+//   foo = ["top"]               // For Qt::Alignment{Qt::AlignTop}
+//   foo = ["vcenter", "right"]  // For Qt::Alignment{Qt::AlignVCenter, Qt::AlignRight}
+[[nodiscard]] std::optional<Qt::Alignment> tryGetQtAlignment(toml::node_view<const toml::node> node);
+
+// Get std::optional<QSizePolicy> from toml::value<std::string>.
+// Applies the same policy to both width and height.
+// Case-insensitive.
+//
+// Supports: "Fixed", "Minimum", "Maximum", "Preferred", "Expanding",
+//           "MinimumExpanding" (or "Minimum_Expanding"), "Ignored"
+//
+// Examples:
+// foo = "fixed"
+// foo = "MinimumExpanding"
+// foo = "minimum_expanding"
+// TODO Separate height and width
+[[nodiscard]] std::optional<QSizePolicy> tryGetQSizePolicy(toml::node_view<const toml::node> node);
+
+} // namespace tomlqt
