@@ -1,0 +1,15 @@
+---
+Checks: >
+  *,
+  -altera-*,
+  -boost-*,
+  -fuchsia-*,
+  -google-readability-todo,
+  -hicpp-*,
+  -llvmlibc-*,
+  -misc-header-include-cycle,
+  -modernize-use-trailing-return-type,
+  -portability-avoid-pragma-once,
+  -portability-restrict-system-includes
+HeaderFilterRegex: '.*'
+...
