@@ -4,7 +4,7 @@ add_library(TomlQt
         TomlQt.cpp)
 
 target_include_directories(TomlQt PRIVATE
-        $<BUILD_INTERFACE:${INCLUDE_DIR}
+        $<BUILD_INTERFACE:${INCLUDE_DIR}>
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
 target_link_libraries(TomlQt PRIVATE
