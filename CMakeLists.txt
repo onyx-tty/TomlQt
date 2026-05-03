@@ -1,11 +1,20 @@
 cmake_minimum_required(VERSION 3.14)
-project(TomlQt VERSION 0.6.0 LANGUAGES CXX)
+project(TomlQt VERSION 0.6.1 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(QT_VERSION_MAJOR 6)
 
 include(GNUInstallDirs)
+
+# Install and use CPM to resolve conflicting and duplicated CppUtils
+file(
+        DOWNLOAD
+        https://github.com/cpm-cmake/CPM.cmake/releases/download/v0.42.1/CPM.cmake
+        ${CMAKE_CURRENT_BINARY_DIR}/cmake/CPM.cmake
+        EXPECTED_HASH SHA256=f3a6dcc6a04ce9e7f51a127307fa4f699fb2bade357a8eb4c5b45df76e1dc6a5
+)
+include(${CMAKE_CURRENT_BINARY_DIR}/cmake/CPM.cmake)
 
 if(ENABLE_CLANG_TIDY)
         set(CMAKE_CXX_CLANG_TIDY
@@ -25,18 +34,12 @@ set(CPPUTILS_ENABLE_QT ON)
 find_package(tomlplusplus REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
-if(NOT TARGET CppUtils)
-        find_package(CppUtils QUIET)
-endif()
+CPMAddPackage("gh:onyx-tty/CppUtils#926ee69")
 
-if(NOT TARGET CppUtils)
-        add_subdirectory(external/CppUtils)
-endif()
-
-# Store and propagate INCLUDE_DIR and SRC_DIR for use in target_include_directories
 set(ROOT_DIR
         ${CMAKE_CURRENT_LIST_DIR})
 
+# Store and propagate INCLUDE_DIR for use in target_include_directories
 set(INCLUDE_DIR
         ${ROOT_DIR}/include)
 
