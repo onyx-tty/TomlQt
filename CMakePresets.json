@@ -9,6 +9,7 @@
                         "binaryDir": "build/Debug",
                         "cacheVariables": {
                                 "CMAKE_BUILD_TYPE": "Debug",
+				"CMAKE_INSTALL_PREFIX": "${sourceDir}/build/${presetName}/install",
                                 "LOG_DEBUG": "ON"
                         }
                 },
@@ -22,6 +23,7 @@
                                 "CMAKE_BUILD_TYPE": "Debug",
                                 "CMAKE_C_COMPILER": "clang",
                                 "CMAKE_CXX_COMPILER": "clang++",
+				"CMAKE_INSTALL_PREFIX": "${sourceDir}/build/${presetName}/install",
                                 "ENABLE_CLANG_TIDY": "ON",
                                 "LOG_DEBUG": "ON"
                         }
@@ -33,7 +35,8 @@
                         "generator": "Ninja",
                         "binaryDir": "build/Release",
                         "cacheVariables": {
-                                "CMAKE_BUILD_TYPE": "Release"
+                                "CMAKE_BUILD_TYPE": "Release",
+				"CMAKE_INSTALL_PREFIX": "${sourceDir}/build/${presetName}/install"
                         }
                 },
                 {
@@ -43,7 +46,8 @@
                         "generator": "Ninja",
                         "binaryDir": "build/RelDebWithInfo",
                         "cacheVariables": {
-                                "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+                                "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+				"CMAKE_INSTALL_PREFIX": "${sourceDir}/build/${presetName}/install"
                         }
                 }
         ]

@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(QT_VERSION_MAJOR 6)
 
 include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
 
 # Install and use CPM to resolve conflicting and duplicated CppUtils
 file(
@@ -50,3 +51,36 @@ if(BUILD_TESTS)
         enable_testing()
         add_subdirectory(tests)
 endif()
+
+install(# Install compiled artifacts to correct destinations, register all targets
+        # under the name TomlQt_export
+        TARGETS TomlQt
+                TomlQt_Enum TomlQt_Maps TomlQt_QFlags # details (temporary)
+        EXPORT TomlQt_export
+        ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        RUNTIME  DESTINATION ${CMAKE_INSTALL_BINDIR}
+        INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+
+# Write resulting TomlQt_export to TomlQt_export.cmake
+install(EXPORT TomlQt_export
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/cmake/TomlQt)
+
+# Process the Config.cmake.in template, write TomlQtConfig.cmake
+# to the build directory
+configure_package_config_file(${CMAKE_CURRENT_LIST_DIR}/cmake/Config.cmake.in
+        "${CMAKE_CURRENT_BINARY_DIR}/TomlQtConfig.cmake"
+        INSTALL_DESTINATION "${CMAKE_INSTALL_DATADIR}/cmake/TomlQt")
+
+# Generate TomlQtConfigVersion.cmake to ensure version
+# requirements are satisfied by the consumer
+write_basic_package_version_file(
+        TomlQtConfigVersion.cmake
+        VERSION ${PACKAGE_VERSION}
+        COMPATIBILITY AnyNewerVersion)
+
+# Copy both generated cmake files into the install tree
+install(
+        FILES ${CMAKE_CURRENT_BINARY_DIR}/TomlQtConfig.cmake
+              ${CMAKE_CURRENT_BINARY_DIR}/TomlQtConfigVersion.cmake
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/cmake/TomlQt)
