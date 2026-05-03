@@ -5,7 +5,7 @@
 
 #include "CppUtils/Log/QtLog.h"
 #include "CppUtils/String/StdString.h"
-#include "Detail/Enum.h"
+#include "TomlQt/Detail/Enum.h"
 
 #include <optional>
 #include <string>

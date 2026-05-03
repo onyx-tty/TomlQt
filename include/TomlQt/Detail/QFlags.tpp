@@ -5,7 +5,7 @@
 
 #include "CppUtils/Log/QtLog.h"
 #include "CppUtils/String/StdString.h"
-#include "Detail/QFlags.h"
+#include "TomlQt/Detail/QFlags.h"
 
 #include <string>
 #include <toml++/toml.hpp>

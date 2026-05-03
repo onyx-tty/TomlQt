@@ -1,12 +1,12 @@
 // SPDX-FileCopyrightText: 2026 Łukasz Wrodarczyk
 // SPDX-License-Identifier: MIT
 
-#include "TomlQt.h"
-#include "ArrayBounds.h"
+#include "TomlQt/TomlQt.h"
 #include "CppUtils/Log/QtLog.h"
-#include "Detail/Enum.h"
-#include "Detail/Maps.h"
-#include "Detail/QFlags.h"
+#include "TomlQt/ArrayBounds.h"
+#include "TomlQt/Detail/Enum.h"
+#include "TomlQt/Detail/Maps.h"
+#include "TomlQt/Detail/QFlags.h"
 
 #include <cstddef>
 #include <cstdint>

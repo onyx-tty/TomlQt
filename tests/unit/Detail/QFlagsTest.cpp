@@ -1,9 +1,9 @@
 // SPDX-FileCopyrightText: 2026 Łukasz Wrodarczyk
 // SPDX-License-Identifier: MIT
 
-#include "Detail/QFlags.h"
-#include "Detail/Maps.h"
 #include "Helpers.h"
+#include "TomlQt/Detail/QFlags.h"
+#include "TomlQt/Detail/Maps.h"
 
 #include <cstdlib>
 #include <gtest/gtest.h>

@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2026 Łukasz Wrodarczyk
 // SPDX-License-Identifier: MIT
 
-#include "Detail/Maps.h"
+#include "TomlQt/Detail/Maps.h"
 
 #include <string>
 #include <unordered_map>

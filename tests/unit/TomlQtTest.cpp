@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2026 Łukasz Wrodarczyk
 // SPDX-License-Identifier: MIT
 
-#include "TomlQt.h"
+#include "TomlQt/TomlQt.h"
 
 #include <gtest/gtest.h>
 #include <optional>
