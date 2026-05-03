@@ -20,7 +20,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 option(BUILD_TESTS "Build tests" ON)
 option(LOG_DEBUG "Print debug-level logs" OFF)
-option(CPPUTILS_ENABLE_QT "Enable Qt in CppUtils" ON)
+set(CPPUTILS_ENABLE_QT ON)
 
 find_package(tomlplusplus REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
