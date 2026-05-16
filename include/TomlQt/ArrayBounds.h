@@ -15,9 +15,11 @@ struct ArrayBounds final {
         enum class validation_result { success, min_size_fail, max_size_fail };
 
         [[nodiscard]] validation_result validate(const toml::array& arr) const {
-                if (min_size && min_size > arr.size()) { return validation_result::min_size_fail; }
-                if (max_size && max_size < arr.size()) { return validation_result::max_size_fail; }
-                return validation_result::success;
+                using enum validation_result;
+
+                if (min_size && min_size > arr.size()) { return min_size_fail; }
+                if (max_size && max_size < arr.size()) { return max_size_fail; }
+                return success;
         }
 };
 

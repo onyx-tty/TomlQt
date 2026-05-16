@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2026 Łukasz Wrodarczyk
 // SPDX-License-Identifier: MIT
 
-#include "Helpers.h"
 #include "TomlQt/Detail/Enum.h"
+#include "Helpers.h"
 #include "TomlQt/Detail/Maps.h"
 
 #include <cstdlib>
@@ -93,18 +93,15 @@ TEST(TryGetEnumFromMapTest, HandleCorrectQSizePolicy) {
                 ASSERT_EQ(result.value(), expected);
         };
 
-        ASSERT_NO_FATAL_FAILURE(tester("fixed", {QSizePolicy::Fixed, QSizePolicy::Fixed}));
-        ASSERT_NO_FATAL_FAILURE(tester("minimum", {QSizePolicy::Minimum, QSizePolicy::Minimum}));
-        ASSERT_NO_FATAL_FAILURE(tester("maximum", {QSizePolicy::Maximum, QSizePolicy::Maximum}));
-        ASSERT_NO_FATAL_FAILURE(
-                tester("preferred", {QSizePolicy::Preferred, QSizePolicy::Preferred}));
-        ASSERT_NO_FATAL_FAILURE(
-                tester("expanding", {QSizePolicy::Expanding, QSizePolicy::Expanding}));
-        ASSERT_NO_FATAL_FAILURE(tester("minimumexpanding", {QSizePolicy::MinimumExpanding,
-                                                            QSizePolicy::MinimumExpanding}));
-        ASSERT_NO_FATAL_FAILURE(tester("minimum_expanding", {QSizePolicy::MinimumExpanding,
-                                                             QSizePolicy::MinimumExpanding}));
-        ASSERT_NO_FATAL_FAILURE(tester("ignored", {QSizePolicy::Ignored, QSizePolicy::Ignored}));
+        using enum QSizePolicy::Policy;
+        ASSERT_NO_FATAL_FAILURE(tester("fixed", {Fixed, Fixed}));
+        ASSERT_NO_FATAL_FAILURE(tester("minimum", {Minimum, Minimum}));
+        ASSERT_NO_FATAL_FAILURE(tester("maximum", {Maximum, Maximum}));
+        ASSERT_NO_FATAL_FAILURE(tester("preferred", {Preferred, Preferred}));
+        ASSERT_NO_FATAL_FAILURE(tester("expanding", {Expanding, Expanding}));
+        ASSERT_NO_FATAL_FAILURE(tester("minimumexpanding", {MinimumExpanding, MinimumExpanding}));
+        ASSERT_NO_FATAL_FAILURE(tester("minimum_expanding", {MinimumExpanding, MinimumExpanding}));
+        ASSERT_NO_FATAL_FAILURE(tester("ignored", {Ignored, Ignored}));
 }
 
 TEST(TryGetEnumFromMapTest, HandleInvalidNode) {

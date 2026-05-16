@@ -16,12 +16,14 @@ std::unordered_map<std::string, Qt::AlignmentFlag> tomlqt::detail::map::makeAlig
 }
 
 std::unordered_map<std::string, QSizePolicy> tomlqt::detail::map::makeSizePolicy() {
-        return {{"fixed", {QSizePolicy::Fixed, QSizePolicy::Fixed}},
-                {"minimum", {QSizePolicy::Minimum, QSizePolicy::Minimum}},
-                {"maximum", {QSizePolicy::Maximum, QSizePolicy::Maximum}},
-                {"preferred", {QSizePolicy::Preferred, QSizePolicy::Preferred}},
-                {"expanding", {QSizePolicy::Expanding, QSizePolicy::Expanding}},
-                {"minimumexpanding", {QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding}},
-                {"minimum_expanding", {QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding}},
-                {"ignored", {QSizePolicy::Ignored, QSizePolicy::Ignored}}};
+        using enum QSizePolicy::Policy;
+
+        return {{"fixed", {Fixed, Fixed}},
+                {"minimum", {Minimum, Minimum}},
+                {"maximum", {Maximum, Maximum}},
+                {"preferred", {Preferred, Preferred}},
+                {"expanding", {Expanding, Expanding}},
+                {"minimumexpanding", {MinimumExpanding, MinimumExpanding}},
+                {"minimum_expanding", {MinimumExpanding, MinimumExpanding}},
+                {"ignored", {Ignored, Ignored}}};
 }
