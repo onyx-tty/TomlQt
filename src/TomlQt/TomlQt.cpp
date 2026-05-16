@@ -19,8 +19,7 @@
 
 std::optional<QSize> tomlqt::tryGetQSize(toml::node_view<const toml::node> node) {
         using result                    = tomlqt::ArrayBounds::validation_result;
-        constexpr size_t min_size       = 2;
-        const auto       arr_conditions = tomlqt::ArrayBounds{min_size};
+        const auto       arr_conditions = tomlqt::ArrayBounds{.min_size = 2};
 
         const auto* arr = node.as_array();
         if (!arr) { return std::nullopt; }
