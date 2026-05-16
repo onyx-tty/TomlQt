@@ -21,9 +21,10 @@ std::optional<QSize> tomlqt::tryGetQSize(toml::node_view<const toml::node> node)
         using result                    = tomlqt::ArrayBounds::validation_result;
         constexpr size_t min_size       = 2;
         const auto       arr_conditions = tomlqt::ArrayBounds{min_size};
-        const auto*      arr            = node.as_array();
 
+        const auto* arr = node.as_array();
         if (!arr) { return std::nullopt; }
+
         auto res = arr_conditions.validate(*arr);
         if (res == result::min_size_fail) {
                 QWARNING() << QString("QSize requires 2 numbers for construction! Numbers provided: %1")
@@ -36,6 +37,7 @@ std::optional<QSize> tomlqt::tryGetQSize(toml::node_view<const toml::node> node)
 
         if (!width || !height) { return std::nullopt; }
 
+        // TODO Handle narrowing conversion
         return QSize(width.value(), height.value());
 }
 
