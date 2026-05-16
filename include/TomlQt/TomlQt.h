@@ -30,19 +30,19 @@ namespace tomlqt {
 // Get std::optional<Qt::Alignment> from toml::value<std::string>.
 // Case-insensitive.
 //
-// Supports: "Top", "VCenter", "Bottom", "HCenter", "Left", "Right", "Center"
-//
 // Format:
 // a) Pure Qt::Alignment: toml::value<std::string>
 //
+//   Supports: "Top", "Bottom", "Left", "Right", "Center"
+//
 //   Examples:
-//   foo = "top"     // For Qt::Alignment{Qt::AlignTop}
-//   foo = "left"    // For Qt::Alignment{Qt::AlignLeft}
+//   foo = "top"     // For Qt::Alignment{Qt::AlignHCenter | Qt::AlignTop}
+//   foo = "left"    // For Qt::Alignment{Qt::AlignLeft | Qt::AlignVCenter}
 //   foo = "center"  // For Qt::Alignment{Qt::AlignCenter}
-//   foo = "vcenter" // For Qt::Alignment{Qt::AlignVCenter}
 //
 // b) QFlags: toml::array of toml::value<std::string>
 //
+//   Supports: "Top", "VCenter", "Bottom", "HCenter", "Left", "Right", "Center"
 //
 //   Examples:
 //   foo = ["top", "left"]       // For Qt::Alignment{Qt::AlignTop, Qt::AlignLeft}

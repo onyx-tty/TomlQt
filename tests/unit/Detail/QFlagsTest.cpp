@@ -36,8 +36,8 @@ using namespace tomlqt::detail;
         return example;
 }
 
-[[nodiscard]] static const auto& getAlignmentMap() {
-        static const std::unordered_map<std::string, Qt::AlignmentFlag> map = map::makeAlignment();
+[[nodiscard]] static const auto& getAlignmentFlagMap() {
+        static const std::unordered_map<std::string, Qt::AlignmentFlag> map = map::makeAlignmentFlag();
 
         return map;
 }
@@ -52,7 +52,7 @@ TEST(TomlQtQFlagsTestHelpersTest, SanityChecks) {
 // TODO HandleMixedCaseKey
 TEST(TryGetQFlagsFromMapTest, HandleCorrectQtAlignment) {
         const auto& table         = getExampleTable()["alignment"];
-        const auto& alignment_map = getAlignmentMap();
+        const auto& alignment_map = getAlignmentFlagMap();
 
         const auto tester = [&table, &alignment_map](std::string_view key, Qt::Alignment expected) {
                 auto result = tryGetQFlagsFromMap(table[key], alignment_map);
@@ -69,9 +69,9 @@ TEST(TryGetQFlagsFromMapTest, HandleCorrectQtAlignment) {
 
 TEST(TryGetQFlagsFromMapTest, HandleInvalidNode) {
         const auto& table         = getExampleTable();
-        const auto& alignment_map = getAlignmentMap();
+        const auto& alignment_map = getAlignmentFlagMap();
 
-        const auto invalid_result = tryGetQFlagsFromMap(table["invalid"], getAlignmentMap());
+        const auto invalid_result = tryGetQFlagsFromMap(table["invalid"], alignment_map);
         ASSERT_FALSE(invalid_result.has_value());
 }
 

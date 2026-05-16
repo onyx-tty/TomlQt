@@ -8,7 +8,15 @@
 #include <QSizePolicy>
 #include <Qt>
 
-std::unordered_map<std::string, Qt::AlignmentFlag> tomlqt::detail::map::makeAlignment() {
+std::unordered_map<std::string, Qt::Alignment> tomlqt::detail::map::makeAlignment() {
+        return {{"top", Qt::AlignHCenter | Qt::AlignTop},
+                {"center", Qt::AlignCenter},
+                {"bottom", Qt::AlignHCenter | Qt::AlignBottom},
+                {"left", Qt::AlignLeft | Qt::AlignVCenter},
+                {"right", Qt::AlignRight | Qt::AlignVCenter}};
+}
+
+std::unordered_map<std::string, Qt::AlignmentFlag> tomlqt::detail::map::makeAlignmentFlag() {
         return {{"top", Qt::AlignTop},         {"center", Qt::AlignCenter},
                 {"hcenter", Qt::AlignHCenter}, {"vcenter", Qt::AlignVCenter},
                 {"bottom", Qt::AlignBottom},   {"left", Qt::AlignLeft},

@@ -13,7 +13,8 @@ namespace tomlqt {
 namespace detail {
 namespace map {
 
-[[nodiscard]] std::unordered_map<std::string, Qt::AlignmentFlag> makeAlignment();
+[[nodiscard]] std::unordered_map<std::string, Qt::Alignment>     makeAlignment();
+[[nodiscard]] std::unordered_map<std::string, Qt::AlignmentFlag> makeAlignmentFlag();
 [[nodiscard]] std::unordered_map<std::string, QSizePolicy>       makeSizePolicy();
 
 } // namespace map

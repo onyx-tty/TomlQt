@@ -48,11 +48,17 @@ std::optional<QString> tomlqt::tryGetQString(toml::node_view<const toml::node> n
 }
 
 std::optional<Qt::Alignment> tomlqt::tryGetQtAlignment(toml::node_view<const toml::node> node) {
-        const static std::unordered_map<std::string, Qt::AlignmentFlag> map =
-                tomlqt::detail::map::makeAlignment();
+        if (node.is_string()) {
+                const static std::unordered_map<std::string, Qt::Alignment> map =
+                        tomlqt::detail::map::makeAlignment();
 
-        if (node.is_string()) { return tomlqt::detail::tryGetEnumFromMap(node, map); }
-        if (node.is_array()) { return tomlqt::detail::tryGetQFlagsFromMap(node, map); }
+                return tomlqt::detail::tryGetEnumFromMap(node, map);
+        }
+        if (node.is_array()) {
+                const static std::unordered_map<std::string, Qt::AlignmentFlag> map =
+                        tomlqt::detail::map::makeAlignmentFlag();
+                return tomlqt::detail::tryGetQFlagsFromMap(node, map);
+        }
 
         return std::nullopt;
 }

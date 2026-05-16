@@ -45,7 +45,7 @@ using namespace tomlqt::detail;
 }
 
 [[nodiscard]] static const auto& getAlignmentMap() {
-        static const std::unordered_map<std::string, Qt::AlignmentFlag> map = map::makeAlignment();
+        static const std::unordered_map<std::string, Qt::Alignment> map = map::makeAlignment();
 
         return map;
 }
@@ -75,11 +75,11 @@ TEST(TryGetEnumFromMapTest, HandleCorrectQtAlignment) {
                 ASSERT_EQ(result.value(), expected);
         };
 
-        ASSERT_NO_FATAL_FAILURE(tester("top", Qt::AlignTop));
+        ASSERT_NO_FATAL_FAILURE(tester("top", Qt::AlignHCenter | Qt::AlignTop));
         ASSERT_NO_FATAL_FAILURE(tester("center", Qt::AlignCenter));
-        ASSERT_NO_FATAL_FAILURE(tester("bottom", Qt::AlignBottom));
-        ASSERT_NO_FATAL_FAILURE(tester("left", Qt::AlignLeft));
-        ASSERT_NO_FATAL_FAILURE(tester("right", Qt::AlignRight));
+        ASSERT_NO_FATAL_FAILURE(tester("bottom", Qt::AlignHCenter | Qt::AlignBottom));
+        ASSERT_NO_FATAL_FAILURE(tester("left", Qt::AlignLeft | Qt::AlignVCenter));
+        ASSERT_NO_FATAL_FAILURE(tester("right", Qt::AlignRight | Qt::AlignVCenter));
 }
 
 // TODO HandleMixedCaseKey
