@@ -48,7 +48,7 @@ TEST(TomlQtTestHelpersTest, SanityChecks) {
 }
 
 namespace {
-static const auto table = *getExampleTable()["values"].as_table();
+const auto table = *getExampleTable()["values"].as_table();
 }
 
 TEST(TryGetQSizeTest, HandlesCorrectNode) {
