@@ -9,14 +9,10 @@
 #include <QSizePolicy>
 #include <Qt>
 
-namespace tomlqt {
-namespace detail {
-namespace map {
+namespace tomlqt::detail::map {
 
 [[nodiscard]] std::unordered_map<std::string, Qt::Alignment>     makeAlignment();
 [[nodiscard]] std::unordered_map<std::string, Qt::AlignmentFlag> makeAlignmentFlag();
 [[nodiscard]] std::unordered_map<std::string, QSizePolicy>       makeSizePolicy();
 
-} // namespace map
-} // namespace detail
-} // namespace tomlqt
+} // namespace tomlqt::detail::map

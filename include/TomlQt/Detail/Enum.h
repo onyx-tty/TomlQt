@@ -10,15 +10,13 @@
 #include <QSizePolicy>
 #include <Qt>
 
-namespace tomlqt {
-namespace detail {
+namespace tomlqt::detail {
 
 // TODO Document
 template<typename T>
 [[nodiscard]] std::optional<T> tryGetEnumFromMap(toml::node_view<const toml::node>         key,
                                                  const std::unordered_map<std::string, T>& map);
 
-} // namespace detail
-} // namespace tomlqt
+} // namespace tomlqt::detail
 
 #include "Enum.tpp"

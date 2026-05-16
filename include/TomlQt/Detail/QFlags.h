@@ -9,15 +9,13 @@
 #include <QFlags>
 #include <Qt>
 
-namespace tomlqt {
-namespace detail {
+namespace tomlqt::detail {
 
 // TODO Document
 template<typename T>
 [[nodiscard]] std::optional<QFlags<T>> tryGetQFlagsFromMap(
         toml::node_view<const toml::node> node, const std::unordered_map<std::string, T>& map);
 
-} // namespace detail
-} // namespace tomlqt
+} // namespace tomlqt::detail
 
 #include "QFlags.tpp"
