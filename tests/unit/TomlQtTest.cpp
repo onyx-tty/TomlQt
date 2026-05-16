@@ -11,6 +11,7 @@
 #include <QString>
 
 using namespace std::string_view_literals;
+using namespace tomlqt;
 
 [[nodiscard]] static consteval std::string_view getRawExampleTable() {
         constexpr std::string_view example = R"(
@@ -52,7 +53,7 @@ const auto table = *getExampleTable()["values"].as_table();
 }
 
 TEST(TryGetQSizeTest, HandlesCorrectNode) {
-        const std::optional<QSize> qsize_res = tomlqt::tryGetQSize(table["qsize"]);
+        const std::optional<QSize> qsize_res = tryGetQSize(table["qsize"]);
         ASSERT_TRUE(qsize_res.has_value());
 
         const QSize size = {100, 50};
@@ -60,22 +61,22 @@ TEST(TryGetQSizeTest, HandlesCorrectNode) {
 }
 
 TEST(TryGetQSizeTest, HandlesEmptyNode) {
-        const std::optional<QSize> qsize_res = tomlqt::tryGetQSize(table["does_not_exist"]);
+        const std::optional<QSize> qsize_res = tryGetQSize(table["does_not_exist"]);
         EXPECT_FALSE(qsize_res.has_value());
 }
 
 TEST(TryGetQSizeTest, HandlesWrongType) {
-        const std::optional<QSize> qsize_res = tomlqt::tryGetQSize(table["year"]);
+        const std::optional<QSize> qsize_res = tryGetQSize(table["year"]);
         EXPECT_FALSE(qsize_res.has_value());
 }
 
 TEST(TryGetQSizeTest, HandlesInsufficientIndex) {
-        const std::optional<QSize> qsize_res = tomlqt::tryGetQSize(table["small_qsize"]);
+        const std::optional<QSize> qsize_res = tryGetQSize(table["small_qsize"]);
         EXPECT_FALSE(qsize_res.has_value());
 }
 
 TEST(TryGetQSizeTest, HandlesLargerArrays) {
-        const std::optional<QSize> qsize_res = tomlqt::tryGetQSize(table["large_qsize"]);
+        const std::optional<QSize> qsize_res = tryGetQSize(table["large_qsize"]);
         ASSERT_TRUE(qsize_res.has_value());
 
         const QSize size = {100, 50};
@@ -83,7 +84,7 @@ TEST(TryGetQSizeTest, HandlesLargerArrays) {
 }
 
 TEST(TryGetQStringTest, HandlesCorrectNode) {
-        const std::optional<QString> str_res = tomlqt::tryGetQString(table["name"]);
+        const std::optional<QString> str_res = tryGetQString(table["name"]);
         ASSERT_TRUE(str_res.has_value());
 
         const QString name = "TomlQt";
@@ -91,11 +92,11 @@ TEST(TryGetQStringTest, HandlesCorrectNode) {
 }
 
 TEST(TryGetQStringTest, HandlesEmptyNode) {
-        const std::optional<QString> str_res = tomlqt::tryGetQString(table["does_not_exist"]);
+        const std::optional<QString> str_res = tryGetQString(table["does_not_exist"]);
         EXPECT_FALSE(str_res.has_value());
 }
 
 TEST(TryGetQStringTest, HandlesWrongType) {
-        const std::optional<QString> str_res = tomlqt::tryGetQString(table["year"]);
+        const std::optional<QString> str_res = tryGetQString(table["year"]);
         EXPECT_FALSE(str_res.has_value());
 }
