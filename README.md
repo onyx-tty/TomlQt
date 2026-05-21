@@ -35,8 +35,6 @@ title = "TomlQt"
 ### Mapping
 
 ``` C++
-const toml::table config = getConfig();
-
 auto size   = tryGetQSize(config["size"]);         // QSize(1920, 1080)
 auto policy = tryGetQSizePolicy(config["policy"]); // QSizePolicy(::Fixed | ::Fixed)
 auto align1 = tryGetQtAlignment(config["align1"]); // Qt::Alignment(::HCenter | ::Top)
