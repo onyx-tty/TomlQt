@@ -9,7 +9,7 @@
                         "binaryDir": "build/Debug",
                         "cacheVariables": {
                                 "CMAKE_BUILD_TYPE": "Debug",
-				"CMAKE_INSTALL_PREFIX": "${sourceDir}/build/${presetName}/install",
+                                "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/${presetName}/install",
                                 "LOG_DEBUG": "ON"
                         }
                 },
@@ -23,7 +23,7 @@
                                 "CMAKE_BUILD_TYPE": "Debug",
                                 "CMAKE_C_COMPILER": "clang",
                                 "CMAKE_CXX_COMPILER": "clang++",
-				"CMAKE_INSTALL_PREFIX": "${sourceDir}/build/${presetName}/install",
+                                "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/${presetName}/install",
                                 "ENABLE_CLANG_TIDY": "ON",
                                 "LOG_DEBUG": "ON"
                         }
@@ -36,7 +36,7 @@
                         "binaryDir": "build/Release",
                         "cacheVariables": {
                                 "CMAKE_BUILD_TYPE": "Release",
-				"CMAKE_INSTALL_PREFIX": "${sourceDir}/build/${presetName}/install"
+                                "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/${presetName}/install"
                         }
                 },
                 {
@@ -44,11 +44,47 @@
                         "displayName": "",
                         "description": "",
                         "generator": "Ninja",
-                        "binaryDir": "build/RelDebWithInfo",
+                        "binaryDir": "build/RelWithDebInfo",
                         "cacheVariables": {
                                 "CMAKE_BUILD_TYPE": "RelWithDebInfo",
-				"CMAKE_INSTALL_PREFIX": "${sourceDir}/build/${presetName}/install"
+                                "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/${presetName}/install"
                         }
+                }
+        ],
+        "buildPresets": [
+                {
+                        "name": "Debug",
+                        "configurePreset": "Debug"
+                },
+                {
+                        "name": "Lint",
+                        "configurePreset": "Lint"
+                },
+                {
+                        "name": "Release",
+                        "configurePreset": "Release"
+                },
+                {
+                        "name": "RelWithDebInfo",
+                        "configurePreset": "RelWithDebInfo"
+                }
+        ],
+        "testPresets": [
+                {
+                        "name": "Debug",
+                        "configurePreset": "Debug"
+                },
+                {
+                        "name": "Lint",
+                        "configurePreset": "Lint"
+                },
+                {
+                        "name": "Release",
+                        "configurePreset": "Release"
+                },
+                {
+                        "name": "RelWithDebInfo",
+                        "configurePreset": "RelWithDebInfo"
                 }
         ]
 }
