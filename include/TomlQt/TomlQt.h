@@ -8,6 +8,7 @@
 #include <QSize>
 #include <QSizePolicy>
 #include <QString>
+#include <Qt>
 
 // TODO Document std::nullopt return paths
 

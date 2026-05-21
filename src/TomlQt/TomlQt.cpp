@@ -12,10 +12,13 @@
 #include <optional>
 #include <string>
 #include <toml++/toml.hpp>
+#include <unordered_map>
+#include <QDebug>
 #include <QFlag>
 #include <QSize>
+#include <QSizePolicy>
 #include <QString>
-#include <QDebug>
+#include <Qt>
 
 // Qt 6.5+ provides a dedicated header <QtLogging>.
 // Use it when possible to reduce compilation times.

@@ -10,8 +10,8 @@
 #include <string>
 #include <toml++/toml.hpp>
 #include <unordered_map>
-#include <QString>
 #include <QDebug>
+#include <QString>
 
 // Qt 6.5+ provides a dedicated header <QtLogging>.
 // Use it when possible to reduce compilation times.

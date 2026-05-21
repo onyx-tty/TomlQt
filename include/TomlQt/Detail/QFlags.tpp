@@ -6,6 +6,7 @@
 #include "CppUtils/String/StdString.h"
 #include "TomlQt/Detail/QFlags.h"
 
+#include <optional>
 #include <string>
 #include <toml++/toml.hpp>
 #include <unordered_map>
