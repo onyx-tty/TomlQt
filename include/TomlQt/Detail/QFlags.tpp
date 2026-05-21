@@ -3,15 +3,25 @@
 
 #pragma once
 
-#include "CppUtils/Log/QtLog.h"
 #include "CppUtils/String/StdString.h"
 #include "TomlQt/Detail/QFlags.h"
 
 #include <string>
 #include <toml++/toml.hpp>
 #include <unordered_map>
+#include <QDebug>
 #include <QFlags>
 #include <QString>
+
+// Qt 6.5+ provides a dedicated header <QtLogging>.
+// Use it when possible to reduce compilation times.
+// For older Qt versions, fall back to the full <QtCore>.
+// <QtVersionChecks> didn't exist before Qt 6.5, so it can't be used either.
+#if __has_include(<QtLogging>) // Qt >=6.5
+        #include <QtLogging>
+#else
+        #include <QtGlobal> // Qt <6.5
+#endif
 
 template<typename T>
 std::optional<QFlags<T>> tomlqt::detail::tryGetQFlagsFromMap(
@@ -26,8 +36,8 @@ std::optional<QFlags<T>> tomlqt::detail::tryGetQFlagsFromMap(
 
                 const auto iter = map.find(string::toLowerCopy(*key));
                 if (iter == map.cend()) {
-                        QWARNING() << QString("Unknown flag value %1")
-                                              .arg(QString::fromStdString(*key));
+                        qWarning() << QString("%1: Unknown flag value %2")
+                                              .arg(__func__, QString::fromStdString(*key));
                         return std::nullopt;
                 }
 

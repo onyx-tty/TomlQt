@@ -8,8 +8,7 @@ target_include_directories(TomlQt_Enum INTERFACE
 
 target_link_libraries(TomlQt_Enum INTERFACE
         CppUtils::String
-        CppUtils::Conversion
-        CppUtils::Log::Qt)
+        CppUtils::Conversion)
 
 target_link_libraries(TomlQt_Enum INTERFACE
         Qt${QT_VERSION_MAJOR}::Widgets
@@ -25,8 +24,7 @@ target_include_directories(TomlQt_QFlags INTERFACE
 
 target_link_libraries(TomlQt_QFlags INTERFACE
         CppUtils::String
-        CppUtils::Conversion
-        CppUtils::Log::Qt)
+        CppUtils::Conversion)
 
 target_link_libraries(TomlQt_QFlags INTERFACE
         Qt${QT_VERSION_MAJOR}::Core

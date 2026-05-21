@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: MIT
 
 #include "TomlQt/TomlQt.h"
-#include "CppUtils/Log/QtLog.h"
 #include "TomlQt/ArrayBounds.h"
 #include "TomlQt/Detail/Enum.h"
 #include "TomlQt/Detail/Maps.h"
@@ -16,18 +15,29 @@
 #include <QFlag>
 #include <QSize>
 #include <QString>
+#include <QDebug>
+
+// Qt 6.5+ provides a dedicated header <QtLogging>.
+// Use it when possible to reduce compilation times.
+// For older Qt versions, fall back to the full <QtCore>.
+// <QtVersionChecks> didn't exist before Qt 6.5, so it can't be used either.
+#if __has_include(<QtLogging>) // Qt >=6.5
+        #include <QtLogging>
+#else
+        #include <QtGlobal> // Qt <6.5
+#endif
 
 std::optional<QSize> tomlqt::tryGetQSize(toml::node_view<const toml::node> node) {
-        using result                    = tomlqt::ArrayBounds::validation_result;
-        const auto       arr_conditions = tomlqt::ArrayBounds{.min_size = 2};
+        using result              = tomlqt::ArrayBounds::validation_result;
+        const auto arr_conditions = tomlqt::ArrayBounds{.min_size = 2};
 
         const auto* arr = node.as_array();
         if (!arr) { return std::nullopt; }
 
         auto res = arr_conditions.validate(*arr);
         if (res == result::min_size_fail) {
-                QWARNING() << QString("QSize requires 2 numbers for construction! Numbers provided: %1")
-                                      .arg(QString::number(arr->size()));
+                qWarning() << QString("%1: QSize requires 2 numbers for construction! Numbers provided: %2")
+                                      .arg(__func__, QString::number(arr->size()));
                 return std::nullopt;
         }
 

@@ -10,8 +10,7 @@ target_include_directories(TomlQt PUBLIC
 target_link_libraries(TomlQt PRIVATE
         TomlQt::Enum
         TomlQt::QFlags
-        TomlQt::Maps
-        CppUtils::Log::Qt)
+        TomlQt::Maps)
 
 target_link_libraries(TomlQt PUBLIC
         Qt${QT_VERSION_MAJOR}::Widgets
