@@ -35,7 +35,7 @@ std::optional<QFlags<T>> tomlqt::detail::tryGetQFlagsFromMap(
                 const auto key = elem.value<std::string>();
                 if (!key) { return std::nullopt; }
 
-                const auto iter = map.find(string::toLowerCopy(*key));
+                const auto iter = map.find(string::makeLower(*key));
                 if (iter == map.cend()) {
                         qWarning() << QString("%1: Unknown flag value %2")
                                               .arg(__func__, QString::fromStdString(*key));

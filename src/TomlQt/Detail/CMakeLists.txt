@@ -7,8 +7,7 @@ target_include_directories(TomlQt_Enum INTERFACE
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
 target_link_libraries(TomlQt_Enum INTERFACE
-        CppUtils::String
-        CppUtils::Conversion)
+        CppUtils::String)
 
 target_link_libraries(TomlQt_Enum INTERFACE
         Qt${QT_VERSION_MAJOR}::Widgets
@@ -23,8 +22,7 @@ target_include_directories(TomlQt_QFlags INTERFACE
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
 target_link_libraries(TomlQt_QFlags INTERFACE
-        CppUtils::String
-        CppUtils::Conversion)
+        CppUtils::String)
 
 target_link_libraries(TomlQt_QFlags INTERFACE
         Qt${QT_VERSION_MAJOR}::Core

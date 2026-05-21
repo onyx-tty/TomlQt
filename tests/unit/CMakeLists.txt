@@ -13,7 +13,6 @@ target_link_libraries(TomlQt_UnitTests PRIVATE
         TomlQt::Enum
         TomlQt::QFlags
         TomlQt::Maps
-        CppUtils::Conversion
         CppUtils::String)
 
 target_link_libraries(TomlQt_UnitTests PUBLIC

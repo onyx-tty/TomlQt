@@ -29,7 +29,7 @@ std::optional<T> tomlqt::detail::tryGetEnumFromMap(toml::node_view<const toml::n
         const auto key_str = key.value<std::string>();
         if (!key_str) { return std::nullopt; }
 
-        const auto iter = map.find(string::toLowerCopy(key_str.value()));
+        const auto iter = map.find(string::makeLower(key_str.value()));
         if (iter == map.cend()) {
                 qWarning() << QString("%1: Key %2 not found in map!")
                                       .arg(__func__, QString::fromStdString(key_str.value()));
