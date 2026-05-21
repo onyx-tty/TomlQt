@@ -5,12 +5,12 @@
 #include "Helpers.h"
 #include "TomlQt/Detail/Maps.h"
 
-#include <cstdlib>
 #include <gtest/gtest.h>
 #include <optional>
 #include <string>
 #include <string_view>
 #include <unordered_map>
+#include <QSizePolicy>
 #include <Qt>
 
 using namespace std::string_view_literals;

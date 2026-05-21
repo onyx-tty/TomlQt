@@ -5,10 +5,11 @@
 
 #include <optional>
 #include <toml++/toml.hpp>
-#include <QSize>
-#include <QSizePolicy>
-#include <QString>
 #include <Qt>
+
+class QSize;
+class QSizePolicy;
+class QString;
 
 // TODO Document std::nullopt return paths
 

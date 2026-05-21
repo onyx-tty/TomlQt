@@ -5,7 +5,6 @@
 #include "TomlQt/Detail/QFlags.h"
 #include "TomlQt/Detail/Maps.h"
 
-#include <cstdlib>
 #include <gtest/gtest.h>
 #include <optional>
 #include <string>

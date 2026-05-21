@@ -7,8 +7,6 @@
 #include <string>
 #include <toml++/toml.hpp>
 #include <unordered_map>
-#include <QSizePolicy>
-#include <Qt>
 
 namespace tomlqt::detail {
 
