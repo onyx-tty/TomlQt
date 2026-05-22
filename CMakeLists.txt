@@ -34,7 +34,7 @@ set(CPPUTILS_ENABLE_QT ON)
 find_package(tomlplusplus REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
-CPMAddPackage("gh:onyx-tty/CppUtils#53cccec")
+CPMAddPackage("gh:onyx-tty/CppUtils#fe014a8")
 
 set(ROOT_DIR
         ${CMAKE_CURRENT_LIST_DIR})
