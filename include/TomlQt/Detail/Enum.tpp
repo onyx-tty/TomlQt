@@ -12,16 +12,7 @@
 #include <unordered_map>
 #include <QDebug>
 #include <QString>
-
-// Qt 6.5+ provides a dedicated header <QtLogging>.
-// Use it when possible to reduce compilation times.
-// For older Qt versions, fall back to the full <QtCore>.
-// <QtVersionChecks> didn't exist before Qt 6.5, so it can't be used either.
-#if __has_include(<QtLogging>) // Qt >=6.5
-        #include <QtLogging>
-#else
-        #include <QtGlobal> // Qt <6.5
-#endif
+#include <QtGlobal>
 
 template<typename T>
 std::optional<T> tomlqt::detail::tryGetEnumFromMap(toml::node_view<const toml::node>         key,
