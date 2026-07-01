@@ -31,6 +31,13 @@
 #endif
 
 template<>
+std::optional<QString> tomlqt::value<QString>(toml::node_view<const toml::node> node) {
+        if (auto str = node.value<std::string>()) { return QString::fromStdString(str.value()); }
+
+        return std::nullopt;
+}
+
+template<>
 std::optional<QSize> tomlqt::value<QSize>(toml::node_view<const toml::node> node) {
         using result              = tomlqt::ArrayBounds::validation_result;
         const auto arr_conditions = tomlqt::ArrayBounds{.min_size = 2};
@@ -55,10 +62,11 @@ std::optional<QSize> tomlqt::value<QSize>(toml::node_view<const toml::node> node
 }
 
 template<>
-std::optional<QString> tomlqt::value<QString>(toml::node_view<const toml::node> node) {
-        if (auto str = node.value<std::string>()) { return QString::fromStdString(str.value()); }
+std::optional<QSizePolicy> tomlqt::value<QSizePolicy>(toml::node_view<const toml::node> node) {
+        const static std::unordered_map<std::string, QSizePolicy> map =
+                tomlqt::detail::map::makeSizePolicy();
 
-        return std::nullopt;
+        return tomlqt::detail::tryGetEnumFromMap(node, map);
 }
 
 template<>
@@ -76,12 +84,4 @@ std::optional<Qt::Alignment> tomlqt::value<Qt::Alignment>(toml::node_view<const 
         }
 
         return std::nullopt;
-}
-
-template<>
-std::optional<QSizePolicy> tomlqt::value<QSizePolicy>(toml::node_view<const toml::node> node) {
-        const static std::unordered_map<std::string, QSizePolicy> map =
-                tomlqt::detail::map::makeSizePolicy();
-
-        return tomlqt::detail::tryGetEnumFromMap(node, map);
 }

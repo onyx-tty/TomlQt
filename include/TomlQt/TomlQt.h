@@ -23,6 +23,14 @@ namespace tomlqt {
 template<typename TReturn>
 [[nodiscard]] std::optional<TReturn> value(toml::node_view<const toml::node> node);
 
+// Get std::optional<QString> from toml::value<std::string>.
+//
+// Format: toml::value<std::string>
+//
+// Example: foo = "TomlQt"
+template<>
+std::optional<QString> value<QString>(toml::node_view<const toml::node> node);
+
 // Get std::optional<QSize> from toml::array of toml::value<int64_t> values [width, height].
 // Numbers beyond the first 2 are ignored.
 //
@@ -32,13 +40,20 @@ template<typename TReturn>
 template<>
 std::optional<QSize> value<QSize>(toml::node_view<const toml::node> node);
 
-// Get std::optional<QString> from toml::value<std::string>.
+// Get std::optional<QSizePolicy> from toml::value<std::string>.
+// Applies the same policy to both width and height.
+// Case-insensitive.
 //
-// Format: toml::value<std::string>
+// Supports: "Fixed", "Minimum", "Maximum", "Preferred", "Expanding",
+//           "MinimumExpanding" (or "Minimum_Expanding"), "Ignored"
 //
-// Example: foo = "TomlQt"
+// Examples:
+// foo = "fixed"
+// foo = "MinimumExpanding"
+// foo = "minimum_expanding"
+// TODO Separate height and width
 template<>
-std::optional<QString> value<QString>(toml::node_view<const toml::node> node);
+std::optional<QSizePolicy> value<QSizePolicy>(toml::node_view<const toml::node> node);
 
 // Get std::optional<Qt::Alignment> from toml::value<std::string>.
 // Case-insensitive.
@@ -63,20 +78,5 @@ std::optional<QString> value<QString>(toml::node_view<const toml::node> node);
 //   foo = ["vcenter", "right"]  // For Qt::Alignment{Qt::AlignVCenter, Qt::AlignRight}
 template<>
 std::optional<Qt::Alignment> value<Qt::Alignment>(toml::node_view<const toml::node> node);
-
-// Get std::optional<QSizePolicy> from toml::value<std::string>.
-// Applies the same policy to both width and height.
-// Case-insensitive.
-//
-// Supports: "Fixed", "Minimum", "Maximum", "Preferred", "Expanding",
-//           "MinimumExpanding" (or "Minimum_Expanding"), "Ignored"
-//
-// Examples:
-// foo = "fixed"
-// foo = "MinimumExpanding"
-// foo = "minimum_expanding"
-// TODO Separate height and width
-template<>
-std::optional<QSizePolicy> value<QSizePolicy>(toml::node_view<const toml::node> node);
 
 } // namespace tomlqt
