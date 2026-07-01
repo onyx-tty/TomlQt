@@ -5,26 +5,25 @@ Load Qt types directly from TOML configuration files.
 ## Features
 
 **Conversions**: Extract and convert simple TOML types to Qt equivalents
-- `tryGetQString()`: String -> `std::optional<QString>`
+- `value<QString>()`: String -> `std::optional<QString>`
 
 **Mappings:**: Parse std::string into Qt semantic types
-- `tryGetQSize()`: Unsigned int array -> `std::optional<QSize>`
-- `tryGetQSizePolicy()`: String -> `std::optional<QSizePolicy>`
-- `tryGetQtAlignment()`: String array or string -> `std::optional<Qt::Alignment>`
+- `value<QSize>()`: Unsigned int array -> `std::optional<QSize>`
+- `value<QSizePolicy>()`: String -> `std::optional<QSizePolicy>`
+- `value<Qt::Alignment>()`: String array or string -> `std::optional<Qt::Alignment>`
 
 ## Roadmap
 
-- [ ] Support for string arrays in `tryGetQSizePolicy()`, mimicking `tryGetQtAlignment()`
-- [ ] `std::optional<T>` template overloads mimicking those in TOML++: `node.value<T>()`
-- [ ] `T*` getters mimicking those in TOML++: `node.as_TYPE()`
-- [ ] `T*` getter template overloads: `node.as<T>()`
+- [ ] Support for string arrays in `value<QSizePolicy>()`, mimicking `value<Qt::Alignment>()`
+- [X] `std::optional<TReturn>` getter `tomlqt::value<TReturn>`, similar to TOML++'s `node.value<T>()`
+- [ ] `TReturn*` getter `tomlqt::as<TReturn>`, similar to TOML++'s `node.as_TYPE()`
 
 ## Examples
 
 ### Conversion
 
 ``` C++
-auto title = tryGetQString(config["title"]); // QString("TomlQt")
+auto title = value<QString>(config["title"]); // QString("TomlQt")
 ```
 
 ``` TOML
@@ -35,10 +34,10 @@ title = "TomlQt"
 ### Mapping
 
 ``` C++
-auto size   = tryGetQSize(config["size"]);         // QSize(1920, 1080)
-auto policy = tryGetQSizePolicy(config["policy"]); // QSizePolicy(::Fixed | ::Fixed)
-auto align1 = tryGetQtAlignment(config["align1"]); // Qt::Alignment(::HCenter | ::Top)
-auto align2 = tryGetQtAlignment(config["align2"]); // Qt::Alignment(::HCenter | ::Top)
+auto size   = value<QSize>(config["size"]);           // QSize(1920, 1080)
+auto policy = value<QSizePolicy>(config["policy"]);   // QSizePolicy(::Fixed | ::Fixed)
+auto align1 = value<Qt::Alignment>(config["align1"]); // Qt::Alignment(::HCenter | ::Top)
+auto align2 = value<Qt::Alignment>(config["align2"]); // Qt::Alignment(::HCenter | ::Top)
 ```
 
 ``` TOML

@@ -14,20 +14,26 @@ class QString;
 // TODO Document std::nullopt return paths
 
 namespace tomlqt {
+
+template<typename TReturn>
+[[nodiscard]] std::optional<TReturn> value(toml::node_view<const toml::node> node);
+
 // Get std::optional<QSize> from toml::array of toml::value<int64_t> values [width, height].
 // Numbers beyond the first 2 are ignored.
 //
 // Format: toml::array of toml::value<int64_t> values [width, height]
 //
 // Example: foo = [100, 50]
-[[nodiscard]] std::optional<QSize> tryGetQSize(toml::node_view<const toml::node> node);
+template<>
+std::optional<QSize> value<QSize>(toml::node_view<const toml::node> node);
 
 // Get std::optional<QString> from toml::value<std::string>.
 //
 // Format: toml::value<std::string>
 //
 // Example: foo = "TomlQt"
-[[nodiscard]] std::optional<QString> tryGetQString(toml::node_view<const toml::node> node);
+template<>
+std::optional<QString> value<QString>(toml::node_view<const toml::node> node);
 
 // Get std::optional<Qt::Alignment> from toml::value<std::string>.
 // Case-insensitive.
@@ -50,7 +56,8 @@ namespace tomlqt {
 //   foo = ["top", "left"]       // For Qt::Alignment{Qt::AlignTop, Qt::AlignLeft}
 //   foo = ["top"]               // For Qt::Alignment{Qt::AlignTop}
 //   foo = ["vcenter", "right"]  // For Qt::Alignment{Qt::AlignVCenter, Qt::AlignRight}
-[[nodiscard]] std::optional<Qt::Alignment> tryGetQtAlignment(toml::node_view<const toml::node> node);
+template<>
+std::optional<Qt::Alignment> value<Qt::Alignment>(toml::node_view<const toml::node> node);
 
 // Get std::optional<QSizePolicy> from toml::value<std::string>.
 // Applies the same policy to both width and height.
@@ -64,6 +71,7 @@ namespace tomlqt {
 // foo = "MinimumExpanding"
 // foo = "minimum_expanding"
 // TODO Separate height and width
-[[nodiscard]] std::optional<QSizePolicy> tryGetQSizePolicy(toml::node_view<const toml::node> node);
+template<>
+std::optional<QSizePolicy> value<QSizePolicy>(toml::node_view<const toml::node> node);
 
 } // namespace tomlqt

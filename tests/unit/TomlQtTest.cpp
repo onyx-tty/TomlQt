@@ -52,51 +52,51 @@ namespace {
 const auto table = *getExampleTable()["values"].as_table();
 }
 
-TEST(TryGetQSizeTest, HandlesCorrectNode) {
-        const std::optional<QSize> qsize_res = tryGetQSize(table["qsize"]);
+TEST(TomlQtValueQSizeTest, HandlesCorrectNode) {
+        const std::optional<QSize> qsize_res = value<QSize>(table["qsize"]);
         ASSERT_TRUE(qsize_res.has_value());
 
         const QSize size = {100, 50};
         EXPECT_EQ(qsize_res.value(), size);
 }
 
-TEST(TryGetQSizeTest, HandlesEmptyNode) {
-        const std::optional<QSize> qsize_res = tryGetQSize(table["does_not_exist"]);
+TEST(TomlQtValueQSizeTest, HandlesEmptyNode) {
+        const std::optional<QSize> qsize_res = value<QSize>(table["does_not_exist"]);
         EXPECT_FALSE(qsize_res.has_value());
 }
 
-TEST(TryGetQSizeTest, HandlesWrongType) {
-        const std::optional<QSize> qsize_res = tryGetQSize(table["year"]);
+TEST(TomlQtValueQSizeTest, HandlesWrongType) {
+        const std::optional<QSize> qsize_res = value<QSize>(table["year"]);
         EXPECT_FALSE(qsize_res.has_value());
 }
 
-TEST(TryGetQSizeTest, HandlesInsufficientIndex) {
-        const std::optional<QSize> qsize_res = tryGetQSize(table["small_qsize"]);
+TEST(TomlQtValueQSizeTest, HandlesInsufficientIndex) {
+        const std::optional<QSize> qsize_res = value<QSize>(table["small_qsize"]);
         EXPECT_FALSE(qsize_res.has_value());
 }
 
-TEST(TryGetQSizeTest, HandlesLargerArrays) {
-        const std::optional<QSize> qsize_res = tryGetQSize(table["large_qsize"]);
+TEST(TomlQtValueQSizeTest, HandlesLargerArrays) {
+        const std::optional<QSize> qsize_res = value<QSize>(table["large_qsize"]);
         ASSERT_TRUE(qsize_res.has_value());
 
         const QSize size = {100, 50};
         EXPECT_EQ(qsize_res.value(), size);
 }
 
-TEST(TryGetQStringTest, HandlesCorrectNode) {
-        const std::optional<QString> str_res = tryGetQString(table["name"]);
+TEST(TomlQtValueQStringTest, HandlesCorrectNode) {
+        const std::optional<QString> str_res = value<QString>(table["name"]);
         ASSERT_TRUE(str_res.has_value());
 
         const QString name = "TomlQt";
         EXPECT_EQ(str_res.value(), name);
 }
 
-TEST(TryGetQStringTest, HandlesEmptyNode) {
-        const std::optional<QString> str_res = tryGetQString(table["does_not_exist"]);
+TEST(TomlQtValueQStringTest, HandlesEmptyNode) {
+        const std::optional<QString> str_res = value<QString>(table["does_not_exist"]);
         EXPECT_FALSE(str_res.has_value());
 }
 
-TEST(TryGetQStringTest, HandlesWrongType) {
-        const std::optional<QString> str_res = tryGetQString(table["year"]);
+TEST(TomlQtValueQStringTest, HandlesWrongType) {
+        const std::optional<QString> str_res = value<QString>(table["year"]);
         EXPECT_FALSE(str_res.has_value());
 }

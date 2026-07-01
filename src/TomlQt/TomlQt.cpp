@@ -30,7 +30,8 @@
         #include <QtGlobal> // Qt <6.5
 #endif
 
-std::optional<QSize> tomlqt::tryGetQSize(toml::node_view<const toml::node> node) {
+template<>
+std::optional<QSize> tomlqt::value<QSize>(toml::node_view<const toml::node> node) {
         using result              = tomlqt::ArrayBounds::validation_result;
         const auto arr_conditions = tomlqt::ArrayBounds{.min_size = 2};
 
@@ -53,13 +54,15 @@ std::optional<QSize> tomlqt::tryGetQSize(toml::node_view<const toml::node> node)
         return QSize(width.value(), height.value());
 }
 
-std::optional<QString> tomlqt::tryGetQString(toml::node_view<const toml::node> node) {
+template<>
+std::optional<QString> tomlqt::value<QString>(toml::node_view<const toml::node> node) {
         if (auto str = node.value<std::string>()) { return QString::fromStdString(str.value()); }
 
         return std::nullopt;
 }
 
-std::optional<Qt::Alignment> tomlqt::tryGetQtAlignment(toml::node_view<const toml::node> node) {
+template<>
+std::optional<Qt::Alignment> tomlqt::value<Qt::Alignment>(toml::node_view<const toml::node> node) {
         if (node.is_string()) {
                 const static std::unordered_map<std::string, Qt::Alignment> map =
                         tomlqt::detail::map::makeAlignment();
@@ -75,7 +78,8 @@ std::optional<Qt::Alignment> tomlqt::tryGetQtAlignment(toml::node_view<const tom
         return std::nullopt;
 }
 
-std::optional<QSizePolicy> tomlqt::tryGetQSizePolicy(toml::node_view<const toml::node> node) {
+template<>
+std::optional<QSizePolicy> tomlqt::value<QSizePolicy>(toml::node_view<const toml::node> node) {
         const static std::unordered_map<std::string, QSizePolicy> map =
                 tomlqt::detail::map::makeSizePolicy();
 
