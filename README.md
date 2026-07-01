@@ -17,6 +17,7 @@ Load Qt types directly from TOML configuration files.
 - [ ] Support for string arrays in `value<QSizePolicy>()`, mimicking `value<Qt::Alignment>()`
 - [X] `std::optional<TReturn>` getter `tomlqt::value<TReturn>`, similar to TOML++'s `node.value<T>()`
 - [ ] `TReturn*` getter `tomlqt::as<TReturn>`, similar to TOML++'s `node.as_TYPE()`
+- [ ] Constraints for templates
 
 ## Examples
 
