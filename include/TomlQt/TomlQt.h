@@ -15,6 +15,11 @@ class QString;
 
 namespace tomlqt {
 
+// Currently supported specializations:
+// - QString
+// - QSize
+// - QSizePolicy
+// - Qt::Alignment
 template<typename TReturn>
 [[nodiscard]] std::optional<TReturn> value(toml::node_view<const toml::node> node);
 
