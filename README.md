@@ -53,23 +53,23 @@ align2 = ["hcenter", "top"]
 
 #### Prerequisites
 
+* `qt6-base`
+* `libtomlplusplus-dev`
+* `libgtest-dev`
 * `cmake`
 * `ninja`
 * `clang`
-* `libtomlplusplus-dev`
-* `qt6-base`
-* `libgtest-dev`
 
 ##### Arch Linux
 
 ``` sh
-sudo pacman -Sy tomlplusplus qt6-base cmake ninja clang gtest
+sudo pacman -Sy qt6-base tomlplusplus gtest cmake ninja clang
 ```
 
 ##### Ubuntu
 
 ``` sh
-sudo apt install libtomlplusplus-dev qt6-base-dev cmake ninja-build clang
+sudo apt install qt6-base-dev libtomlplusplus-dev cmake ninja-build clang
 ```
 
 #### Build from source
