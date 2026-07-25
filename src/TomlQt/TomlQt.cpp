@@ -76,3 +76,20 @@ std::optional<Qt::Alignment> tomlqt::value<Qt::Alignment>(toml::node_view<const 
 
         return std::nullopt;
 }
+
+template<tomlqt::TomlSupported TReturn>
+[[nodiscard]] std::optional<TReturn> value(toml::node_view<const toml::node> node) {
+        return node.value<TReturn>();
+}
+
+#define INSTANTIATE(T) template std::optional<T> tomlqt::value<T>(toml::node_view<const toml::node> node);
+
+INSTANTIATE(std::string)
+INSTANTIATE(toml::date)
+INSTANTIATE(toml::time)
+INSTANTIATE(toml::date_time)
+INSTANTIATE(std::int64_t)
+INSTANTIATE(double)
+INSTANTIATE(bool)
+
+#undef INSTANTIATE

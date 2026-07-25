@@ -4,7 +4,9 @@
 #pragma once
 
 #include <concepts>
+#include <cstdint>
 #include <optional>
+#include <string>
 #include <toml++/toml.hpp>
 #include <Qt>
 
@@ -16,9 +18,16 @@ class QString;
 
 namespace tomlqt {
 
+template<typename T> concept TomlSupported = std::same_as<T, std::string>
+                                          || std::same_as<T, toml::date>
+                                          || std::same_as<T, toml::time>
+                                          || std::same_as<T, toml::date_time>
+                                          || std::same_as<T, std::int64_t>
+                                          || std::same_as<T, double> || std::same_as<T, bool>;
+
 template<typename T> concept ValueConvertible = std::same_as<T, QString> || std::same_as<T, QSize>
                                              || std::same_as<T, QSizePolicy>
-                                             || std::same_as<T, Qt::Alignment>;
+                                             || std::same_as<T, Qt::Alignment> || TomlSupported<T>;
 
 // Currently supported specializations:
 // - QString
@@ -83,5 +92,14 @@ std::optional<QSizePolicy> value<QSizePolicy>(toml::node_view<const toml::node> 
 //   foo = ["vcenter", "right"]  // For Qt::Alignment{Qt::AlignVCenter, Qt::AlignRight}
 template<>
 std::optional<Qt::Alignment> value<Qt::Alignment>(toml::node_view<const toml::node> node);
+
+// Forwards other types to toml::value() if supported.
+//
+// Supports types: std::string, toml::date, toml::time, toml::date_time,
+//                 std::int64_t, double, bool
+template<TomlSupported T>
+std::optional<T> value(toml::node_view<const toml::node> node) {
+        return node.value<T>();
+}
 
 } // namespace tomlqt
