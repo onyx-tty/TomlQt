@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <concepts>
 #include <optional>
 #include <toml++/toml.hpp>
 #include <Qt>
@@ -15,12 +16,16 @@ class QString;
 
 namespace tomlqt {
 
+template<typename T> concept ValueConvertible = std::same_as<T, QString> || std::same_as<T, QSize>
+                                             || std::same_as<T, QSizePolicy>
+                                             || std::same_as<T, Qt::Alignment>;
+
 // Currently supported specializations:
 // - QString
 // - QSize
 // - QSizePolicy
 // - Qt::Alignment
-template<typename TReturn>
+template<ValueConvertible TReturn>
 [[nodiscard]] std::optional<TReturn> value(toml::node_view<const toml::node> node);
 
 // Get std::optional<QString> from toml::value<std::string>.
