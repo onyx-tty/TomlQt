@@ -1,8 +1,8 @@
 FROM ubuntu:latest AS builder
 
-RUN set -ex;                                                                                         \
-    apt-get update;                                                                                  \
-    apt-get install -y qt6-base-dev libtomlplusplus-dev libgtest-dev cmake git g++ ninja-build clang;
+RUN set -ex;                                                                                   \
+    apt-get update;                                                                            \
+    apt-get install -y qt6-base-dev libtomlplusplus-dev libgtest-dev cmake git g++ ninja-build;
 
 COPY . /app
 WORKDIR /app
