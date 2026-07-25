@@ -12,6 +12,13 @@ Load Qt types directly from TOML configuration files.
 - `value<QSizePolicy>()`: String -> `std::optional<QSizePolicy>`
 - `value<Qt::Alignment>()`: String array or string -> `std::optional<Qt::Alignment>`
 
+**TOML++ support:** Forward native TOML++ types to the original value() implementation.
+- `value<std::string>()` -> `std::optional<std::string>`
+- `value<toml::date>()` -> `std::optional<toml::date>`
+- `value<std::int64_t>()` -> `std::optional<std::int64_t>`
+
+...and so on.
+
 ## Roadmap
 
 - [ ] Support for string arrays in `value<QSizePolicy>()`, mimicking `value<Qt::Alignment>()`
@@ -25,6 +32,7 @@ Load Qt types directly from TOML configuration files.
 
 ``` C++
 auto title = value<QString>(config["title"]); // QString("TomlQt")
+auto title = value<std::string>(config["title"]); // Forwards TOML++ types to TOML++'s .value()
 ```
 
 ``` TOML
