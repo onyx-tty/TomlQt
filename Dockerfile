@@ -2,7 +2,7 @@ FROM ubuntu:latest AS builder
 
 RUN set -ex;                                                                                         \
     apt-get update;                                                                                  \
-    apt-get install -y cmake ninja-build g++ git clang qt6-base-dev libgtest-dev libtomlplusplus-dev;
+    apt-get install -y qt6-base-dev libtomlplusplus-dev libgtest-dev cmake git g++ ninja-build clang;
 
 COPY . /app
 WORKDIR /app
