@@ -52,6 +52,33 @@ namespace {
 const auto table = *getExampleTable()["values"].as_table();
 }
 
+TEST(TomlQtAsArrayWithBoundsTest, HandlesNoBoundChecking) {
+        const auto node = table["qsize"];
+        ASSERT_TRUE(asArrayWithBounds(node, {}));
+}
+
+TEST(TomlQtAsArrayWithBoundsTest, HandlesNull) {
+        const auto arr  = toml::array();
+        const auto node = toml::node_view<const toml::node>(arr);
+        ASSERT_FALSE(asArrayWithBounds(node, {.min_size = 10}));
+}
+
+TEST(TomlQtAsArrayWithBoundsTest, HandlesMinSizeFail) {
+        const auto node = table["qsize"];
+        ASSERT_FALSE(asArrayWithBounds(node, {.min_size = 10}));
+}
+
+TEST(TomlQtAsArrayWithBoundsTest, HandlesMaxSizeFail) {
+        const auto node = table["qsize"];
+        ASSERT_FALSE(asArrayWithBounds(node, {.max_size = 0}));
+}
+
+TEST(TomlQtAsArrayWithBoundsTest, HandlesWrongType) {
+        const auto arr  = toml::value<bool>();
+        const auto node = toml::node_view<const toml::node>(arr);
+        ASSERT_FALSE(asArrayWithBounds(node, {.min_size = 10}));
+}
+
 TEST(TomlQtValueQSizeTest, HandlesCorrectNode) {
         const std::optional<QSize> qsize_res = value<QSize>(table["qsize"]);
         ASSERT_TRUE(qsize_res.has_value());
