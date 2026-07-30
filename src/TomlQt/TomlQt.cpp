@@ -99,17 +99,26 @@ const toml::array* tomlqt::asArrayWithBounds(toml::node_view<const toml::node> n
         };
 
         switch (auto res = bounds.validate(arr)) {
-        case result::success:  return arr;
-        case result::null_ptr: qWarning() << "Cannot parse as array"; return nullptr;
+        case result::success: return arr;
+        case result::null_ptr:
+                if (node.type() == toml::node_type::none) {
+                        qWarning() << "Passed node is empty";
+                } else {
+                        qWarning() << "Cannot parse as array";
+                }
+
+                return nullptr;
         case result::min_size_fail:
                 qWarning() << QString("toml::array size < min_size! min_size: %1, arr size: %2")
                                       .arg(serialize_size(bounds.min_size),
                                            QString::number(arr->size()));
+
                 return nullptr;
         case result::max_size_fail:
                 qWarning() << QString("toml::array size > max_size! max_size: %1, arr size: %2")
                                       .arg(serialize_size(bounds.max_size),
                                            QString::number(arr->size()));
+
                 return nullptr;
         default: qFatal("Unhandled case %i", static_cast<int>(res));
         }
