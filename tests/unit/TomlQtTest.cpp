@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 #include "TomlQt/TomlQt.h"
+#include "TomlQt/ArrayBounds.h"
 
 #include <gtest/gtest.h>
 #include <optional>
@@ -50,11 +51,32 @@ TEST(TomlQtTestHelpersTest, SanityChecks) {
 
 namespace {
 const auto table = *getExampleTable()["values"].as_table();
+
+using enum ArrayBounds::validation_result;
+} // namespace
+
+TEST(ArrayBoundsValidateTest, HandlesAllNull) {
+        toml::array arr = *table["small_qsize"].as_array();
+        ASSERT_EQ(success, ArrayBounds().validate(arr));
+        ASSERT_EQ(success, ArrayBounds().validate(&arr));
 }
 
-TEST(TomlQtAsArrayWithBoundsTest, HandlesNoBoundChecking) {
-        const auto node = table["qsize"];
-        ASSERT_TRUE(asArrayWithBounds(node, {}));
+TEST(ArrayBoundsValidateTest, HandlesMinSizeFail) {
+        toml::array arr    = *table["small_qsize"].as_array();
+        ArrayBounds bounds = {.min_size = 2};
+        ASSERT_EQ(min_size_fail, bounds.validate(arr));
+        ASSERT_EQ(min_size_fail, bounds.validate(&arr));
+}
+
+TEST(ArrayBoundsValidateTest, HandlesMaxSizeFail) {
+        toml::array arr    = *table["large_qsize"].as_array();
+        ArrayBounds bounds = {.max_size = 2};
+        ASSERT_EQ(max_size_fail, bounds.validate(arr));
+        ASSERT_EQ(max_size_fail, bounds.validate(&arr));
+}
+
+TEST(ArrayBoundsValidateTest, HandlesNullArray) {
+        ASSERT_EQ(null_ptr, ArrayBounds().validate(nullptr));
 }
 
 TEST(TomlQtAsArrayWithBoundsTest, HandlesNull) {
