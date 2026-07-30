@@ -45,7 +45,7 @@ template<ValueConvertible TReturn>
 //
 // Example: foo = "TomlQt"
 template<>
-std::optional<QString> value<QString>(toml::node_view<const toml::node> node);
+[[nodiscard]] std::optional<QString> value<QString>(toml::node_view<const toml::node> node);
 
 // Get std::optional<QSize> from toml::array of toml::value<int64_t> values [width, height].
 // Numbers beyond the first 2 are ignored.
@@ -54,7 +54,7 @@ std::optional<QString> value<QString>(toml::node_view<const toml::node> node);
 //
 // Example: foo = [100, 50]
 template<>
-std::optional<QSize> value<QSize>(toml::node_view<const toml::node> node);
+[[nodiscard]] std::optional<QSize> value<QSize>(toml::node_view<const toml::node> node);
 
 // Get std::optional<QSizePolicy> from toml::value<std::string>.
 // Applies the same policy to both width and height.
@@ -69,7 +69,7 @@ std::optional<QSize> value<QSize>(toml::node_view<const toml::node> node);
 // foo = "minimum_expanding"
 // TODO Separate height and width
 template<>
-std::optional<QSizePolicy> value<QSizePolicy>(toml::node_view<const toml::node> node);
+[[nodiscard]] std::optional<QSizePolicy> value<QSizePolicy>(toml::node_view<const toml::node> node);
 
 // Get std::optional<Qt::Alignment> from toml::value<std::string>.
 // Case-insensitive.
@@ -93,14 +93,15 @@ std::optional<QSizePolicy> value<QSizePolicy>(toml::node_view<const toml::node> 
 //   foo = ["top"]               // For Qt::Alignment{Qt::AlignTop}
 //   foo = ["vcenter", "right"]  // For Qt::Alignment{Qt::AlignVCenter, Qt::AlignRight}
 template<>
-std::optional<Qt::Alignment> value<Qt::Alignment>(toml::node_view<const toml::node> node);
+[[nodiscard]] std::optional<Qt::Alignment> value<Qt::Alignment>(
+        toml::node_view<const toml::node> node);
 
 // Forwards other types to toml::value() if supported.
 //
 // Supports types: std::string, toml::date, toml::time, toml::date_time,
 //                 std::int64_t, double, bool
 template<TomlSupported T>
-std::optional<T> value(toml::node_view<const toml::node> node) {
+[[nodiscard]] std::optional<T> value(toml::node_view<const toml::node> node) {
         return node.value<T>();
 }
 
@@ -114,6 +115,7 @@ std::optional<T> value(toml::node_view<const toml::node> node) {
 // Otherwise returns valid toml::array*.
 //
 // Bound-checking is skipped for the attribute (max_size or min_size) that is nullopt.
-const toml::array* asArrayWithBounds(toml::node_view<const toml::node> node, const ArrayBounds& bounds);
+[[nodiscard]] const toml::array* asArrayWithBounds(toml::node_view<const toml::node> node,
+                                                   const ArrayBounds&                bounds);
 
 } // namespace tomlqt
