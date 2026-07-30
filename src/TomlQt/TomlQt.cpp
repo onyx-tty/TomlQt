@@ -101,9 +101,7 @@ const toml::array* tomlqt::asArrayWithBounds(toml::node_view<const toml::node> n
         switch (auto res = bounds.validate(arr)) {
         case result::success: return arr;
         case result::null_ptr:
-                if (node.type() == toml::node_type::none) {
-                        qWarning() << "Passed node is empty";
-                } else {
+                if (node.type() != toml::node_type::none) {
                         qWarning() << "Cannot parse as array";
                 }
 
