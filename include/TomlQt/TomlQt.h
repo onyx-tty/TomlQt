@@ -107,12 +107,12 @@ template<TomlSupported T>
 
 // node.as_array() with bound-checking.
 //
-// Returns nullptr if:
-// 1. Couldn't extract toml::array from given node.
-// 2. The size of extracted toml::array is HIGHER THAN provided bounds.max_size.
-// 3. The size of extracted toml::array is LOWER THAN provided bounds.min_size.
+// Returns nullptr if NOT:
+// 1. Constructible as toml::array.
+// 2. Size of potential toml::array NOT HIGHER THAN provided bounds.max_size.
+// 3. Size of potential toml::array NOT LOWER THAN provided bounds.min_size.
 //
-// Otherwise returns valid toml::array*.
+// Otherwise returns valid const toml::array*
 //
 // Bound-checking is skipped for the attribute (max_size or min_size) that is nullopt.
 [[nodiscard]] const toml::array* asArrayWithBounds(toml::node_view<const toml::node> node,

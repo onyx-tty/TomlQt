@@ -94,30 +94,8 @@ const toml::array* tomlqt::asArrayWithBounds(toml::node_view<const toml::node> n
         using result           = tomlqt::ArrayBounds::validation_result;
         const toml::array* arr = node.as_array();
 
-        const auto serialize_size = [](std::optional<size_t> size) -> QString {
-                return size ? QString::number(size.value()) : "NULL";
-        };
-
-        switch (auto res = bounds.validate(arr)) {
+        switch (bounds.validate(arr)) {
         case result::success: return arr;
-        case result::null_ptr:
-                if (node.type() != toml::node_type::none) {
-                        qWarning() << "Cannot parse as array";
-                }
-
-                return nullptr;
-        case result::min_size_fail:
-                qWarning() << QString("toml::array size < min_size! min_size: %1, arr size: %2")
-                                      .arg(serialize_size(bounds.min_size),
-                                           QString::number(arr->size()));
-
-                return nullptr;
-        case result::max_size_fail:
-                qWarning() << QString("toml::array size > max_size! max_size: %1, arr size: %2")
-                                      .arg(serialize_size(bounds.max_size),
-                                           QString::number(arr->size()));
-
-                return nullptr;
-        default: qFatal("Unhandled case %i", static_cast<int>(res));
+        default:              return nullptr;
         }
 }
