@@ -26,10 +26,9 @@ struct ArrayBounds final {
         [[nodiscard]] validation_result validate(const toml::array* arr) const {
                 using enum validation_result;
 
+                // Handles nullptr here, then the dereference in the const ref overload.
                 if (!arr) { return null_ptr; }
-                if (min_size && min_size > arr->size()) { return min_size_fail; }
-                if (max_size && max_size < arr->size()) { return max_size_fail; }
-                return success;
+                return validate(*arr);
         }
 };
 
