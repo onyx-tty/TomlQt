@@ -10,6 +10,7 @@ on:
 
 env:
   BUILD_TYPE: Debug
+  PKGS: qt6-base-dev libtomlplusplus-dev libgtest-dev cmake git g++ ninja-build ccache
 
 jobs:
   build:
@@ -24,8 +25,19 @@ jobs:
     - name: Cache apt packages
       uses: awalsh128/cache-apt-pkgs-action@latest
       with:
-        packages: qt6-base-dev libtomlplusplus-dev libgtest-dev cmake git g++ ninja-build ccache
+        packages: ${{env.PKGS}}
         version: 1.2
+
+    - name: Handle cache misses
+    # If apt fails to install any of the packages, update and install all the packages anew.
+      run: |
+        for pkg in ${{env.PKGS}}; do
+          if ! dpkg -l "$pkg" 2>/dev/null | grep -q '^ii'; then
+            sudo apt update
+            sudo apt install -y ${{env.PKGS}}
+            break
+          fi
+        done
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
