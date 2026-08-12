@@ -26,15 +26,7 @@ struct ArrayBounds final {
         // Return ArrayBounds::validation_result.
         //
         // Bound-checking is skipped for the attribute (max_size or min_size) that is nullopt.
-        [[nodiscard]] validation_result validate(const toml::array& arr) const {
-                using enum validation_result;
-
-                if (min_size && min_size > arr.size()) { return min_size_fail; }
-
-                if (max_size && max_size < arr.size()) { return max_size_fail; }
-
-                return success;
-        }
+        [[nodiscard]] validation_result validate(const toml::array& arr) const;
 
         // Validate and check if:
         // 1. Passed toml::array NOT NULL.
@@ -44,14 +36,7 @@ struct ArrayBounds final {
         // Return ArrayBounds::validation_result.
         //
         // Bound-checking is skipped for the attribute (max_size or min_size) that is nullopt.
-        [[nodiscard]] validation_result validate(const toml::array* arr) const {
-                using enum validation_result;
-
-                // Handles nullptr here, then delegates the rest to the const ref overload.
-                if (!arr) { return null_ptr; }
-
-                return validate(*arr);
-        }
+        [[nodiscard]] validation_result validate(const toml::array* arr) const;
 };
 
 void logArrayBoundsResult(ArrayBounds::validation_result result);

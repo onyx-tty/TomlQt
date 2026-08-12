@@ -7,6 +7,27 @@
 #include <QString>
 #include <QtGlobal>
 
+using validation_result = tomlqt::ArrayBounds::validation_result;
+
+validation_result tomlqt::ArrayBounds::validate(const toml::array& arr) const {
+        using enum validation_result;
+
+        if (min_size && min_size > arr.size()) { return min_size_fail; }
+
+        if (max_size && max_size < arr.size()) { return max_size_fail; }
+
+        return success;
+}
+
+validation_result tomlqt::ArrayBounds::validate(const toml::array* arr) const {
+        using enum validation_result;
+
+        // Handles nullptr here, then delegates the rest to the const ref overload.
+        if (!arr) { return null_ptr; }
+
+        return validate(*arr);
+}
+
 void tomlqt::logArrayBoundsResult(tomlqt::ArrayBounds::validation_result result) {
         using validation_result = ArrayBounds::validation_result;
         using enum validation_result;
