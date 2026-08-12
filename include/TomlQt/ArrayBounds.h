@@ -12,7 +12,6 @@
 
 namespace tomlqt {
 
-// TODO: Test .validate()
 // TODO: Document
 struct ArrayBounds final {
         std::optional<size_t> min_size = std::nullopt;
