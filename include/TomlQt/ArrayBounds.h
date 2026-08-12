@@ -6,9 +6,6 @@
 #include <cstddef>
 #include <optional>
 #include <toml++/toml.hpp>
-#include <QDebug>
-#include <QString>
-#include <QtGlobal>
 
 namespace tomlqt {
 
