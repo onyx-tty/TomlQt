@@ -20,8 +20,8 @@ struct ArrayBounds final {
         enum class validation_result { success, min_size_fail, max_size_fail, null_ptr };
 
         // Validate and check if:
-        // 1. Size of potential toml::array NOT HIGHER THAN bounds.max_size.
-        // 2. Size of potential toml::array NOT LOWER THAN bounds.min_size.
+        // 1. Size of potential toml::array NOT HIGHER THAN max_size.
+        // 2. Size of potential toml::array NOT LOWER THAN min_size.
         //
         // Return ArrayBounds::validation_result.
         //
@@ -36,6 +36,14 @@ struct ArrayBounds final {
                 return success;
         }
 
+        // Validate and check if:
+        // 1. Passed toml::array NOT NULL.
+        // 2. Size of potential toml::array NOT HIGHER THAN max_size.
+        // 3. Size of potential toml::array NOT LOWER THAN min_size.
+        //
+        // Return ArrayBounds::validation_result.
+        //
+        // Bound-checking is skipped for the attribute (max_size or min_size) that is nullopt.
         [[nodiscard]] validation_result validate(const toml::array* arr) const {
                 using enum validation_result;
 
