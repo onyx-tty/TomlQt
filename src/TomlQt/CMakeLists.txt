@@ -1,7 +1,8 @@
 add_subdirectory(Detail)
 
 add_library(TomlQt
-        TomlQt.cpp)
+        TomlQt.cpp
+        ArrayBounds.cpp)
 
 target_include_directories(TomlQt PUBLIC
         $<BUILD_INTERFACE:${INCLUDE_DIR}>
