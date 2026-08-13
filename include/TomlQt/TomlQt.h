@@ -25,7 +25,9 @@ template<typename T> concept TomlSupported = std::same_as<T, std::string>
                                           || std::same_as<T, toml::time>
                                           || std::same_as<T, toml::date_time>
                                           || std::same_as<T, std::int64_t>
-                                          || std::same_as<T, double> || std::same_as<T, bool>;
+                                          || std::same_as<T, double> || std::same_as<T, bool>
+                                          || std::same_as<T, toml::table>
+                                          || std::same_as<T, toml::array>;
 
 template<typename T> concept ValueConvertible = std::same_as<T, QString> || std::same_as<T, QSize>
                                              || std::same_as<T, QSizePolicy>
