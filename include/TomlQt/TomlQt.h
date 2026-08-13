@@ -28,16 +28,21 @@ concept TomlSupported = std::same_as<T, std::string> || std::same_as<T, toml::da
                      || std::same_as<T, toml::array>;
 
 template<typename T>
-concept ValueConvertible = std::same_as<T, QString> || std::same_as<T, QSize>
-                        || std::same_as<T, QSizePolicy> || std::same_as<T, Qt::Alignment>
-                        || TomlSupported<T>;
+concept TomlQtSupported = std::same_as<T, QString> || std::same_as<T, QSize>
+                       || std::same_as<T, QSizePolicy> || std::same_as<T, Qt::Alignment>
+                       || TomlSupported<T>;
+
+template<typename T>
+concept ValueConvertible [[deprecated(
+        "Use TomlQtSupported instead. ValueConvertible will be removed in version 1.0")]] =
+        TomlQtSupported<T>;
 
 // Currently supported specializations:
 // - QString
 // - QSize
 // - QSizePolicy
 // - Qt::Alignment
-template<ValueConvertible TReturn>
+template<TomlQtSupported TReturn>
 [[nodiscard]] std::optional<TReturn> value(toml::node_view<const toml::node> node);
 
 // Get std::optional<QString> from toml::value<std::string>.
