@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21)
-project(TomlQt VERSION 0.13.3 LANGUAGES CXX)
+project(TomlQt VERSION 0.14.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -33,6 +33,7 @@ set(CPPUTILS_ENABLE_QT ON)
 
 find_package(tomlplusplus REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
+find_package(fmt REQUIRED)
 
 CPMAddPackage("gh:onyx-tty/CppUtils#fe014a8")
 
@@ -46,7 +47,6 @@ set(INCLUDE_DIR
 add_subdirectory(src)
 
 if(PROJECT_IS_TOP_LEVEL)
-        find_package(GTest REQUIRED)
         enable_testing()
         add_subdirectory(tests)
 endif()

@@ -4,18 +4,27 @@
 #include "TomlQt/TomlQt.h"
 #include "TomlQt/ArrayBounds.h"
 
-#include <gtest/gtest.h>
+#include <fmt/format.h>
+#include <iostream>
 #include <optional>
 #include <string_view>
 #include <toml++/toml.hpp>
+#include <QObject>
 #include <QSize>
 #include <QString>
+#include <QTest>
 
 using namespace std::string_view_literals;
 using namespace tomlqt;
 
-[[nodiscard]] static consteval std::string_view getRawExampleTable() {
-        constexpr std::string_view example = R"(
+class TomlQtTest : public QObject {
+        Q_OBJECT
+
+private:
+        using enum ArrayBounds::validation_result;
+
+        [[nodiscard]] static consteval std::string_view getRawExampleTable() {
+                constexpr std::string_view example = R"(
       [values]
       name = "TomlQt"
       year = 2026
@@ -24,128 +33,178 @@ using namespace tomlqt;
       large_qsize = [100, 50, 12, 300, 10]
       )"sv;
 
-        return example;
-}
-
-[[nodiscard]] static toml::table getParsedExampleTable(std::string_view example) {
-        try {
-                toml::table parsed = toml::parse(example);
-                return parsed;
-        } catch (const toml::parse_error& err) {
-                std::cerr << "Parsing failed:\n" << err << "\n";
-                exit(-1);
+                return example;
         }
-}
 
-[[nodiscard]] static const toml::table& getExampleTable() {
-        static const toml::table example = getParsedExampleTable(getRawExampleTable());
-        return example;
-}
+        [[nodiscard]] static toml::table getParsedExampleTable(std::string_view example) {
+                try {
+                        toml::table parsed = toml::parse(example);
+                        return parsed;
+                } catch (const toml::parse_error& err) {
+                        std::cerr << "Parsing failed:\n" << err << "\n";
+                        exit(-1);
+                }
+        }
 
-TEST(TomlQtTestHelpersTest, SanityChecks) {
-        const auto& example_table = getExampleTable();
-        const auto* table         = example_table["values"].as_table();
+        [[nodiscard]] static const toml::table& getExampleTable() {
+                static const toml::table example = getParsedExampleTable(getRawExampleTable());
+                return example;
+        }
 
-        ASSERT_TRUE(table);
-}
+private slots:
+        static void sanityChecks() {
+                const auto& example_table = getExampleTable();
+                const auto* table         = example_table["values"].as_table();
 
-namespace {
-const auto table = *getExampleTable()["values"].as_table();
+                QVERIFY2(table, "Values must be a valid table");
+        }
 
-using enum ArrayBounds::validation_result;
-} // namespace
+        static void ArrayBounds_validate_HandlesAllBoundsNull() {
+                const auto&        example_table = getExampleTable();
+                const toml::array* arr = example_table["values"]["small_qsize"].as_array();
 
-TEST(ArrayBoundsValidateTest, HandlesAllNull) {
-        toml::array arr = *table["small_qsize"].as_array();
-        ASSERT_EQ(success, ArrayBounds().validate(arr));
-        ASSERT_EQ(success, ArrayBounds().validate(&arr));
-}
+                QVERIFY2(ArrayBounds().validate(arr) == success,
+                         "Must return success for null bounds with non-null pointer to non-empty array");
+                QVERIFY2(ArrayBounds().validate(*arr) == success,
+                         "Must return success bounds with non-empty array");
+        }
 
-TEST(ArrayBoundsValidateTest, HandlesMinSizeFail) {
-        toml::array arr    = *table["small_qsize"].as_array();
-        ArrayBounds bounds = {.min_size = 2};
-        ASSERT_EQ(min_size_fail, bounds.validate(arr));
-        ASSERT_EQ(min_size_fail, bounds.validate(&arr));
-}
+        static void ArrayBounds_validate_HandlesMinSizeFail() {
+                const auto&        example_table = getExampleTable();
+                const toml::array* arr    = example_table["values"]["small_qsize"].as_array();
+                ArrayBounds        bounds = {.min_size = 2};
 
-TEST(ArrayBoundsValidateTest, HandlesMaxSizeFail) {
-        toml::array arr    = *table["large_qsize"].as_array();
-        ArrayBounds bounds = {.max_size = 2};
-        ASSERT_EQ(max_size_fail, bounds.validate(arr));
-        ASSERT_EQ(max_size_fail, bounds.validate(&arr));
-}
+                QVERIFY2(bounds.validate(arr) == min_size_fail,
+                         "Must return min_size_fail for failed min_size bound check");
+                QVERIFY2(bounds.validate(*arr) == min_size_fail,
+                         "Must return min_size_fail for failed min_size bound check");
+        }
 
-TEST(ArrayBoundsValidateTest, HandlesNullArray) {
-        ASSERT_EQ(null_ptr, ArrayBounds().validate(nullptr));
-}
+        static void ArrayBounds_validate_HandlesMaxSizeFail() {
+                const auto&        example_table = getExampleTable();
+                const toml::array* arr    = example_table["values"]["large_qsize"].as_array();
+                ArrayBounds        bounds = {.max_size = 2};
 
-TEST(TomlQtAsArrayWithBoundsTest, HandlesNull) {
-        const auto arr  = toml::array();
-        const auto node = toml::node_view<const toml::node>(arr);
-        ASSERT_FALSE(asArrayWithBounds(node, {.min_size = 10}));
-}
+                QVERIFY2(bounds.validate(arr) == max_size_fail,
+                         "Must return max_size_fail for failed max_size bound check");
+                QVERIFY2(bounds.validate(*arr) == max_size_fail,
+                         "Must return max_size_fail for failed max_size bound check");
+        }
 
-TEST(TomlQtAsArrayWithBoundsTest, HandlesMinSizeFail) {
-        const auto node = table["qsize"];
-        ASSERT_FALSE(asArrayWithBounds(node, {.min_size = 10}));
-}
+        static void ArrayBounds_validate_HandlesNullArray() {
+                QVERIFY2(ArrayBounds().validate(nullptr) == null_ptr,
+                         "Must return null_ptr for null array");
+        }
 
-TEST(TomlQtAsArrayWithBoundsTest, HandlesMaxSizeFail) {
-        const auto node = table["qsize"];
-        ASSERT_FALSE(asArrayWithBounds(node, {.max_size = 0}));
-}
+        static void asArrayWithBounds_HandlesNull() {
+                const auto arr  = toml::array();
+                const auto node = toml::node_view<const toml::node>(arr);
 
-TEST(TomlQtAsArrayWithBoundsTest, HandlesWrongType) {
-        const auto arr  = toml::value<bool>();
-        const auto node = toml::node_view<const toml::node>(arr);
-        ASSERT_FALSE(asArrayWithBounds(node, {.min_size = 10}));
-}
+                QVERIFY2(!asArrayWithBounds(node, {.min_size = 10}),
+                         "Must return nullptr for empty array");
+                QVERIFY2(!asArrayWithBounds({}, {.min_size = 10}),
+                         "Must return nullptr for null node");
+        }
 
-TEST(TomlQtValueQSizeTest, HandlesCorrectNode) {
-        const std::optional<QSize> qsize_res = value<QSize>(table["qsize"]);
-        ASSERT_TRUE(qsize_res.has_value());
+        static void asArrayWithBounds_HandlesMinSizeFail() {
+                const auto& example_table = getExampleTable();
+                const auto  node          = example_table["values"]["qsize"];
 
-        const QSize size = {100, 50};
-        EXPECT_EQ(qsize_res.value(), size);
-}
+                QVERIFY2(!asArrayWithBounds(node, {.min_size = 10}),
+                         "Must return nullptr for failed min_size bound check");
+        }
 
-TEST(TomlQtValueQSizeTest, HandlesEmptyNode) {
-        const std::optional<QSize> qsize_res = value<QSize>(table["does_not_exist"]);
-        EXPECT_FALSE(qsize_res.has_value());
-}
+        static void asArrayWithBounds_HandlesMaxSizeFail() {
+                const auto& example_table = getExampleTable();
+                const auto  node          = example_table["values"]["qsize"];
 
-TEST(TomlQtValueQSizeTest, HandlesWrongType) {
-        const std::optional<QSize> qsize_res = value<QSize>(table["year"]);
-        EXPECT_FALSE(qsize_res.has_value());
-}
+                QVERIFY2(!asArrayWithBounds(node, {.max_size = 0}),
+                         "Must return nullptr for failed max_size bound check");
+        }
 
-TEST(TomlQtValueQSizeTest, HandlesInsufficientIndex) {
-        const std::optional<QSize> qsize_res = value<QSize>(table["small_qsize"]);
-        EXPECT_FALSE(qsize_res.has_value());
-}
+        static void asArrayWithBounds_HandlesWrongType() {
+                const auto arr  = toml::value<bool>();
+                const auto node = toml::node_view<const toml::node>(arr);
 
-TEST(TomlQtValueQSizeTest, HandlesLargerArrays) {
-        const std::optional<QSize> qsize_res = value<QSize>(table["large_qsize"]);
-        ASSERT_TRUE(qsize_res.has_value());
+                QVERIFY2(!asArrayWithBounds(node, {}), "Must return nullptr for the wrong type");
+        }
 
-        const QSize size = {100, 50};
-        EXPECT_EQ(qsize_res.value(), size);
-}
+        static void valueQSize_HandlesCorrectNode() {
+                const auto& example_table = getExampleTable();
+                const auto  node          = example_table["values"]["qsize"];
 
-TEST(TomlQtValueQStringTest, HandlesCorrectNode) {
-        const std::optional<QString> str_res = value<QString>(table["name"]);
-        ASSERT_TRUE(str_res.has_value());
+                const std::optional<QSize> qsize_res = value<QSize>(node);
+                QVERIFY2(qsize_res.has_value(), "example_table[qsize] must be valid");
 
-        const QString name = "TomlQt";
-        EXPECT_EQ(str_res.value(), name);
-}
+                const QSize size = {100, 50};
+                QVERIFY2(qsize_res.value() == size,
+                         "Must be able to interpret an array of 2 numbers as QSize");
+        }
 
-TEST(TomlQtValueQStringTest, HandlesEmptyNode) {
-        const std::optional<QString> str_res = value<QString>(table["does_not_exist"]);
-        EXPECT_FALSE(str_res.has_value());
-}
+        static void valueQSize_HandlesEmptyNode() {
+                const auto& example_table = getExampleTable();
+                const auto& node          = example_table["does_not_exist"];
 
-TEST(TomlQtValueQStringTest, HandlesWrongType) {
-        const std::optional<QString> str_res = value<QString>(table["year"]);
-        EXPECT_FALSE(str_res.has_value());
-}
+                const std::optional<QSize> qsize_res = value<QSize>(node);
+                QVERIFY2(!qsize_res.has_value(), "Must return nullopt for empty nodes");
+        }
+
+        static void valueQSize_HandlesWrongType() {
+                const auto& example_table = getExampleTable();
+                const auto& node          = example_table["values"]["year"];
+
+                const std::optional<QSize> qsize_res = value<QSize>(node);
+                QVERIFY2(!qsize_res.has_value(), "Must return nullopt for wrong types");
+        }
+
+        static void valueQSize_HandlesInsufficientIndex() {
+                const auto& example_table = getExampleTable();
+                const auto& node          = example_table["values"]["small_qsize"];
+
+                const std::optional<QSize> qsize_res = value<QSize>(node);
+                QVERIFY2(!qsize_res.has_value(),
+                         "Must return nullopt for arrays with less than 2 elements");
+        }
+
+        static void valueQSize_HandlesLargerArrays() {
+                const auto& example_table = getExampleTable();
+                const auto& node          = example_table["values"]["large_qsize"];
+
+                const std::optional<QSize> qsize_res = value<QSize>(node);
+                QVERIFY2(qsize_res.has_value(), "Must be valid even with more than 2 elements");
+
+                const QSize size = {100, 50};
+                QVERIFY2(qsize_res.value() == size,
+                         "Must return QSize with expected width and height");
+        }
+
+        static void valueQString_HandlesCorrectNode() {
+                const auto& example_table = getExampleTable();
+                const auto& node          = example_table["values"]["name"];
+
+                const std::optional<QString> str_res = value<QString>(node);
+                QVERIFY2(str_res.has_value(), "Must return QString from valid node");
+
+                const QString name = "TomlQt";
+                QVERIFY2(str_res.value() == name, "Must return expected QString");
+        }
+
+        static void valueQString_HandlesEmptyNode() {
+                const auto& example_table = getExampleTable();
+                const auto& node          = example_table["does_not_exist"];
+
+                const std::optional<QString> str_res = value<QString>(node);
+                QVERIFY2(!str_res.has_value(), "Must return nullopt from null node");
+        }
+
+        static void valueQString_HandlesWrongType() {
+                const auto& example_table = getExampleTable();
+                const auto& node          = example_table["values"]["year"];
+
+                const std::optional<QString> str_res = value<QString>(node);
+                QVERIFY2(!str_res.has_value(), "Must return nullopt from wrong node type");
+        }
+};
+
+QTEST_APPLESS_MAIN(TomlQtTest);
+#include "TomlQtTest.moc"
