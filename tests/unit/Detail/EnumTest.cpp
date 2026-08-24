@@ -6,7 +6,6 @@
 #include "_Helpers/Helpers.h"
 
 #include <fmt/format.h>
-#include <optional>
 #include <string>
 #include <string_view>
 #include <unordered_map>
@@ -18,12 +17,10 @@
 using namespace std::string_view_literals;
 using namespace tomlqt::detail;
 
-class EnumTest final : public QObject {
-        Q_OBJECT
+namespace {
 
-private:
-        [[nodiscard]] static consteval std::string_view getRawExampleTable() {
-                constexpr std::string_view example = R"(
+[[nodiscard]] consteval std::string_view getRawExampleTable() {
+        constexpr std::string_view example = R"(
       [alignment]
       top = "top"
       center = "center"
@@ -42,44 +39,47 @@ private:
       ignored = "ignored"
       )"sv;
 
-                return example;
+        return example;
+}
+
+[[nodiscard]] const toml::table& example() {
+        static const toml::table example = getParsedTable(getRawExampleTable());
+        return example;
+}
+
+} // namespace
+
+class EnumTest final : public QObject {
+        Q_OBJECT
+
+private:
+        [[nodiscard]] static const auto& alignment() {
+                static const auto& _alignment = example()["alignment"];
+                return _alignment;
         }
 
-        [[nodiscard]] static const toml::table& getExampleTable() {
-                static const toml::table example = getParsedTable(getRawExampleTable());
-                return example;
+        [[nodiscard]] static const auto& sizePolicy() {
+                static const auto& _size_policy = example()["size_policy"];
+                return _size_policy;
         }
 
-        [[nodiscard]] static const auto& getAlignmentMap() {
+        [[nodiscard]] static const auto& alignmentMap() {
                 static const std::unordered_map<std::string, Qt::Alignment> map =
                         map::makeAlignment();
 
                 return map;
         }
 
-        [[nodiscard]] static const auto& getSizePolicyMap() {
+        [[nodiscard]] static const auto& sizePolicyMap() {
                 static const std::unordered_map<std::string, QSizePolicy> map = map::makeSizePolicy();
 
                 return map;
         }
 
 private slots:
-        static void sanityChecks() {
-                const auto& example_table = getExampleTable();
-                const auto* alignments    = example_table["alignment"].as_table();
-                const auto* size_policies = example_table["size_policy"].as_table();
-
-                QVERIFY2(alignments, "example_table[\"alignment\"] must be a valid table");
-                QVERIFY2(size_policies, "example_table[\"size_policy\"] must be a valid table");
-        }
-
         static void tryGetEnumFromMap_HandleCorrectQtAlignment() {
-                const auto& table         = getExampleTable();
-                const auto& node          = table["alignment"];
-                const auto& alignment_map = getAlignmentMap();
-
-                for (const auto& [key, value] : alignment_map) {
-                        auto result = tryGetEnumFromMap(node[key], alignment_map);
+                for (const auto& [key, value] : alignmentMap()) {
+                        auto result = tryGetEnumFromMap(alignment()[key], alignmentMap());
                         QVERIFY2(result.has_value(),
                                  fmt::format("Key {} must be found in table", key).c_str());
 
@@ -93,12 +93,8 @@ private slots:
 
         // TODO HandleMixedCaseKey
         static void tryGetEnumFromMapTest_HandleCorrectQSizePolicy() {
-                const auto& table           = getExampleTable();
-                const auto& node            = table["size_policy"];
-                const auto& size_policy_map = getSizePolicyMap();
-
-                for (const auto& [key, value] : size_policy_map) {
-                        auto result = tryGetEnumFromMap(node[key], size_policy_map);
+                for (const auto& [key, value] : sizePolicyMap()) {
+                        auto result = tryGetEnumFromMap(sizePolicy()[key], sizePolicyMap());
 
                         QVERIFY2(result.has_value(), "Enum not found");
                         QVERIFY2(result.value() == value,
@@ -111,20 +107,16 @@ private slots:
         }
 
         static void tryGetEnumFromMap_HandleInvalidNode() {
-                const auto& table          = getExampleTable();
-                const auto& node           = table["invalid"];
-                const auto& alignment_map  = getAlignmentMap();
-                const auto  invalid_result = tryGetEnumFromMap(node, getAlignmentMap());
+                const auto invalid_result = tryGetEnumFromMap(alignment()["invalid"],
+                                                              alignmentMap());
 
                 QVERIFY2(!invalid_result.has_value(), "Result from invalid node must be null");
         }
 
         static void tryGetEnumFromMapTest_HandleInvalidMap() {
-                const auto&                                          table = getExampleTable();
-                const auto&                                          node  = table["alignment"];
                 const std::unordered_map<std::string, Qt::Alignment> invalid_map = {};
 
-                const auto invalid_result = tryGetEnumFromMap(node["top"], invalid_map);
+                const auto invalid_result = tryGetEnumFromMap(alignment()["top"], invalid_map);
                 QVERIFY2(!invalid_result.has_value(), "Result from invalid map must be null");
         }
 };

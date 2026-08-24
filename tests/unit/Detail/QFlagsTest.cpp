@@ -6,25 +6,21 @@
 #include "_Helpers/Helpers.h"
 
 #include <fmt/format.h>
-#include <optional>
 #include <string>
 #include <string_view>
 #include <unordered_map>
 #include <QFlags>
 #include <QObject>
-#include <QString>
 #include <QTest>
 #include <Qt>
 
 using namespace std::string_view_literals;
 using namespace tomlqt::detail;
 
-class QFlagsTest final : public QObject {
-        Q_OBJECT
+namespace {
 
-private:
-        [[nodiscard]] static consteval std::string_view getRawExampleTable() {
-                constexpr std::string_view example = R"(
+[[nodiscard]] static consteval std::string_view getRawExampleTable() {
+        constexpr std::string_view example = R"(
       [alignment]
       top = ["top"]
       center = ["center"]
@@ -35,15 +31,26 @@ private:
       right = ["right"]
       )"sv;
 
-                return example;
+        return example;
+}
+
+[[nodiscard]] static const toml::table& example() {
+        static const toml::table example = getParsedTable(getRawExampleTable());
+        return example;
+}
+
+} // namespace
+
+class QFlagsTest final : public QObject {
+        Q_OBJECT
+
+private:
+        [[nodiscard]] static const auto& alignment() {
+                static const auto& _alignment = example()["alignment"];
+                return _alignment;
         }
 
-        [[nodiscard]] static const toml::table& getExampleTable() {
-                static const toml::table example = getParsedTable(getRawExampleTable());
-                return example;
-        }
-
-        [[nodiscard]] static const auto& getAlignmentFlagMap() {
+        [[nodiscard]] static const auto& alignmentMap() {
                 static const std::unordered_map<std::string, Qt::AlignmentFlag> map =
                         map::makeAlignmentFlag();
 
@@ -51,21 +58,11 @@ private:
         }
 
 private slots:
-        static void sanityChecks() {
-                const auto& example_table = getExampleTable();
-                const auto* alignments    = example_table["alignment"].as_table();
-
-                QVERIFY2(alignments, "example_table[\"alignment\"] must be a valid table");
-        }
-
         // TODO HandleMixedCaseKey
         static void tryGetQFlagsFromMap_HandleCorrectQtAlignment() {
-                const auto& table         = getExampleTable();
-                const auto& node          = table["alignment"];
-                const auto& alignment_map = getAlignmentFlagMap();
+                for (const auto& [key, value] : alignmentMap()) {
+                        auto result = tryGetQFlagsFromMap(alignment()[key], alignmentMap());
 
-                for (const auto& [key, value] : alignment_map) {
-                        auto result = tryGetQFlagsFromMap(node[key], alignment_map);
                         QVERIFY2(result.has_value(),
                                  fmt::format("Key {} must be found in table", key).c_str());
                         QVERIFY2(result.value() == value,
@@ -77,20 +74,16 @@ private slots:
         }
 
         static void tryGetQFlagsFromMapTest_HandleInvalidNode() {
-                const auto& table         = getExampleTable();
-                const auto& node          = table["invalid"];
-                const auto& alignment_map = getAlignmentFlagMap();
+                const auto invalid_result = tryGetQFlagsFromMap(alignment()["invalid"],
+                                                                alignmentMap());
 
-                const auto invalid_result = tryGetQFlagsFromMap(node, alignment_map);
                 QVERIFY2(!invalid_result.has_value(), "Result from invalid node must be null");
         }
 
         static void tryGetQFlagsFromMapTest_HandleInvalidMap() {
-                const auto&                                              table = getExampleTable();
-                const auto&                                              node  = table["alignment"];
                 const std::unordered_map<std::string, Qt::AlignmentFlag> invalid_map = {};
 
-                const auto invalid_result = tryGetQFlagsFromMap(node["top"], invalid_map);
+                const auto invalid_result = tryGetQFlagsFromMap(alignment()["top"], invalid_map);
                 QVERIFY2(!invalid_result.has_value(), "Result from invalid table must be null");
         }
 };
