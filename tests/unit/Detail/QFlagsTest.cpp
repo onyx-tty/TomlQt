@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2026 Łukasz Wrodarczyk
 // SPDX-License-Identifier: MIT
 
-#include "Helpers.h"
 #include "TomlQt/Detail/QFlags.h"
+#include "Helpers.h"
 #include "TomlQt/Detail/Maps.h"
 
 #include <gtest/gtest.h>
@@ -20,11 +20,13 @@ using namespace tomlqt::detail;
 [[nodiscard]] static consteval std::string_view getRawExampleTable() {
         constexpr std::string_view example = R"(
       [alignment]
-      top = ["top", "hcenter"]
+      top = ["top"]
       center = ["center"]
-      bottom = ["bottom", "hcenter"]
-      left = ["vcenter", "left"]
-      right = ["vcenter", "right"]
+      hcenter = ["hcenter"]
+      vcenter = ["vcenter"]
+      bottom = ["bottom"]
+      left = ["left"]
+      right = ["right"]
       )"sv;
 
         return example;
@@ -36,7 +38,8 @@ using namespace tomlqt::detail;
 }
 
 [[nodiscard]] static const auto& getAlignmentFlagMap() {
-        static const std::unordered_map<std::string, Qt::AlignmentFlag> map = map::makeAlignmentFlag();
+        static const std::unordered_map<std::string, Qt::AlignmentFlag> map =
+                map::makeAlignmentFlag();
 
         return map;
 }
@@ -53,17 +56,20 @@ TEST(TryGetQFlagsFromMapTest, HandleCorrectQtAlignment) {
         const auto& table         = getExampleTable()["alignment"];
         const auto& alignment_map = getAlignmentFlagMap();
 
-        const auto tester = [&table, &alignment_map](std::string_view key, Qt::Alignment expected) {
+        const auto tester = [&table, &alignment_map](std::string_view  key,
+                                                     Qt::AlignmentFlag expected) {
                 auto result = tryGetQFlagsFromMap(table[key], alignment_map);
                 ASSERT_TRUE(result.has_value());
                 ASSERT_EQ(result.value(), expected);
         };
 
-        ASSERT_NO_FATAL_FAILURE(tester("top", Qt::AlignTop | Qt::AlignHCenter));
+        ASSERT_NO_FATAL_FAILURE(tester("top", Qt::AlignTop));
         ASSERT_NO_FATAL_FAILURE(tester("center", Qt::AlignCenter));
-        ASSERT_NO_FATAL_FAILURE(tester("bottom", Qt::AlignBottom | Qt::AlignHCenter));
-        ASSERT_NO_FATAL_FAILURE(tester("left", Qt::AlignVCenter | Qt::AlignLeft));
-        ASSERT_NO_FATAL_FAILURE(tester("right", Qt::AlignVCenter | Qt::AlignRight));
+        ASSERT_NO_FATAL_FAILURE(tester("hcenter", Qt::AlignHCenter));
+        ASSERT_NO_FATAL_FAILURE(tester("vcenter", Qt::AlignVCenter));
+        ASSERT_NO_FATAL_FAILURE(tester("bottom", Qt::AlignBottom));
+        ASSERT_NO_FATAL_FAILURE(tester("left", Qt::AlignLeft));
+        ASSERT_NO_FATAL_FAILURE(tester("right", Qt::AlignRight));
 }
 
 TEST(TryGetQFlagsFromMapTest, HandleInvalidNode) {
