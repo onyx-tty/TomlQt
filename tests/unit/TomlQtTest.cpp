@@ -25,7 +25,6 @@ private:
 
         [[nodiscard]] static consteval std::string_view getRawExampleTable() {
                 constexpr std::string_view example = R"(
-      [values]
       name = "TomlQt"
       year = 2026
       qsize = [100, 50]
@@ -54,14 +53,14 @@ private:
 private slots:
         static void sanityChecks() {
                 const auto& example_table = getExampleTable();
-                const auto* table         = example_table["values"].as_table();
+                const auto* table         = example_table.as_table();
 
-                QVERIFY2(table, "Values must be a valid table");
+                QVERIFY2(table, "Example table must be valid");
         }
 
         static void ArrayBounds_validate_HandlesAllBoundsNull() {
                 const auto&        example_table = getExampleTable();
-                const toml::array* arr = example_table["values"]["small_qsize"].as_array();
+                const toml::array* arr           = example_table["small_qsize"].as_array();
 
                 QVERIFY2(ArrayBounds().validate(arr) == success,
                          "Must return success for null bounds with non-null pointer to non-empty array");
@@ -71,8 +70,8 @@ private slots:
 
         static void ArrayBounds_validate_HandlesMinSizeFail() {
                 const auto&        example_table = getExampleTable();
-                const toml::array* arr    = example_table["values"]["small_qsize"].as_array();
-                ArrayBounds        bounds = {.min_size = 2};
+                const toml::array* arr           = example_table["small_qsize"].as_array();
+                ArrayBounds        bounds        = {.min_size = 2};
 
                 QVERIFY2(bounds.validate(arr) == min_size_fail,
                          "Must return min_size_fail for failed min_size bound check");
@@ -82,8 +81,8 @@ private slots:
 
         static void ArrayBounds_validate_HandlesMaxSizeFail() {
                 const auto&        example_table = getExampleTable();
-                const toml::array* arr    = example_table["values"]["large_qsize"].as_array();
-                ArrayBounds        bounds = {.max_size = 2};
+                const toml::array* arr           = example_table["large_qsize"].as_array();
+                ArrayBounds        bounds        = {.max_size = 2};
 
                 QVERIFY2(bounds.validate(arr) == max_size_fail,
                          "Must return max_size_fail for failed max_size bound check");
@@ -108,7 +107,7 @@ private slots:
 
         static void asArrayWithBounds_HandlesMinSizeFail() {
                 const auto& example_table = getExampleTable();
-                const auto  node          = example_table["values"]["qsize"];
+                const auto  node          = example_table["qsize"];
 
                 QVERIFY2(!asArrayWithBounds(node, {.min_size = 10}),
                          "Must return nullptr for failed min_size bound check");
@@ -116,7 +115,7 @@ private slots:
 
         static void asArrayWithBounds_HandlesMaxSizeFail() {
                 const auto& example_table = getExampleTable();
-                const auto  node          = example_table["values"]["qsize"];
+                const auto  node          = example_table["qsize"];
 
                 QVERIFY2(!asArrayWithBounds(node, {.max_size = 0}),
                          "Must return nullptr for failed max_size bound check");
@@ -131,7 +130,7 @@ private slots:
 
         static void valueQSize_HandlesCorrectNode() {
                 const auto& example_table = getExampleTable();
-                const auto  node          = example_table["values"]["qsize"];
+                const auto  node          = example_table["qsize"];
 
                 const std::optional<QSize> qsize_res = value<QSize>(node);
                 QVERIFY2(qsize_res.has_value(), "example_table[qsize] must be valid");
@@ -151,7 +150,7 @@ private slots:
 
         static void valueQSize_HandlesWrongType() {
                 const auto& example_table = getExampleTable();
-                const auto& node          = example_table["values"]["year"];
+                const auto& node          = example_table["year"];
 
                 const std::optional<QSize> qsize_res = value<QSize>(node);
                 QVERIFY2(!qsize_res.has_value(), "Must return nullopt for wrong types");
@@ -159,7 +158,7 @@ private slots:
 
         static void valueQSize_HandlesInsufficientIndex() {
                 const auto& example_table = getExampleTable();
-                const auto& node          = example_table["values"]["small_qsize"];
+                const auto& node          = example_table["small_qsize"];
 
                 const std::optional<QSize> qsize_res = value<QSize>(node);
                 QVERIFY2(!qsize_res.has_value(),
@@ -168,7 +167,7 @@ private slots:
 
         static void valueQSize_HandlesLargerArrays() {
                 const auto& example_table = getExampleTable();
-                const auto& node          = example_table["values"]["large_qsize"];
+                const auto& node          = example_table["large_qsize"];
 
                 const std::optional<QSize> qsize_res = value<QSize>(node);
                 QVERIFY2(qsize_res.has_value(), "Must be valid even with more than 2 elements");
@@ -180,7 +179,7 @@ private slots:
 
         static void valueQString_HandlesCorrectNode() {
                 const auto& example_table = getExampleTable();
-                const auto& node          = example_table["values"]["name"];
+                const auto& node          = example_table["name"];
 
                 const std::optional<QString> str_res = value<QString>(node);
                 QVERIFY2(str_res.has_value(), "Must return QString from valid node");
@@ -199,7 +198,7 @@ private slots:
 
         static void valueQString_HandlesWrongType() {
                 const auto& example_table = getExampleTable();
-                const auto& node          = example_table["values"]["year"];
+                const auto& node          = example_table["year"];
 
                 const std::optional<QString> str_res = value<QString>(node);
                 QVERIFY2(!str_res.has_value(), "Must return nullopt from wrong node type");
