@@ -63,20 +63,20 @@ align2 = ["hcenter", "top"]
 
 * `Qt6 Base`
 * `Toml++`
-* `GTest`
+* `fmt`
 * `CMake`
 * `Git`
 
 ##### Arch Linux
 
 ``` sh
-sudo pacman -Sy qt6-base tomlplusplus gtest cmake git
+sudo pacman -Sy qt6-base tomlplusplus fmt cmake git
 ```
 
 ##### Ubuntu
 
 ``` sh
-sudo apt install qt6-base-dev libtomlplusplus-dev libgtest-dev cmake git
+sudo apt install qt6-base-dev libtomlplusplus-dev libfmt-dev cmake git
 ```
 
 #### Build from source
