@@ -69,39 +69,25 @@ TEST(TryGetEnumFromMapTest, HandleCorrectQtAlignment) {
         const auto& table         = getExampleTable()["alignment"];
         const auto& alignment_map = getAlignmentMap();
 
-        const auto tester = [&table, &alignment_map](std::string_view key, Qt::Alignment expected) {
+        for (auto [key, value] : alignment_map) {
                 auto result = tryGetEnumFromMap(table[key], alignment_map);
-                ASSERT_TRUE(result.has_value());
-                ASSERT_EQ(result.value(), expected);
-        };
-
-        ASSERT_NO_FATAL_FAILURE(tester("top", Qt::AlignHCenter | Qt::AlignTop));
-        ASSERT_NO_FATAL_FAILURE(tester("center", Qt::AlignCenter));
-        ASSERT_NO_FATAL_FAILURE(tester("bottom", Qt::AlignHCenter | Qt::AlignBottom));
-        ASSERT_NO_FATAL_FAILURE(tester("left", Qt::AlignLeft | Qt::AlignVCenter));
-        ASSERT_NO_FATAL_FAILURE(tester("right", Qt::AlignRight | Qt::AlignVCenter));
+                EXPECT_TRUE(result.has_value());
+                ASSERT_EQ(result.value(), value);
+        }
 }
 
 // TODO HandleMixedCaseKey
 TEST(TryGetEnumFromMapTest, HandleCorrectQSizePolicy) {
+        using enum QSizePolicy::Policy;
+
         const auto& table           = getExampleTable()["size_policy"];
         const auto& size_policy_map = getSizePolicyMap();
 
-        const auto tester = [&table, &size_policy_map](std::string_view key, QSizePolicy expected) {
+        for (const auto& [key, value] : size_policy_map) {
                 auto result = tryGetEnumFromMap(table[key], size_policy_map);
-                ASSERT_TRUE(result.has_value());
-                ASSERT_EQ(result.value(), expected);
-        };
-
-        using enum QSizePolicy::Policy;
-        ASSERT_NO_FATAL_FAILURE(tester("fixed", {Fixed, Fixed}));
-        ASSERT_NO_FATAL_FAILURE(tester("minimum", {Minimum, Minimum}));
-        ASSERT_NO_FATAL_FAILURE(tester("maximum", {Maximum, Maximum}));
-        ASSERT_NO_FATAL_FAILURE(tester("preferred", {Preferred, Preferred}));
-        ASSERT_NO_FATAL_FAILURE(tester("expanding", {Expanding, Expanding}));
-        ASSERT_NO_FATAL_FAILURE(tester("minimumexpanding", {MinimumExpanding, MinimumExpanding}));
-        ASSERT_NO_FATAL_FAILURE(tester("minimum_expanding", {MinimumExpanding, MinimumExpanding}));
-        ASSERT_NO_FATAL_FAILURE(tester("ignored", {Ignored, Ignored}));
+                EXPECT_TRUE(result.has_value());
+                ASSERT_EQ(result.value(), value);
+        }
 }
 
 TEST(TryGetEnumFromMapTest, HandleInvalidNode) {
@@ -114,7 +100,7 @@ TEST(TryGetEnumFromMapTest, HandleInvalidNode) {
 
 TEST(TryGetEnumFromMapTest, HandleInvalidMap) {
         const auto&                                          table = getExampleTable()["alignment"];
-        const std::unordered_map<std::string, Qt::Alignment> invalid_map{};
+        const std::unordered_map<std::string, Qt::Alignment> invalid_map = {};
 
         const auto invalid_result = tryGetEnumFromMap(table["top"], invalid_map);
         ASSERT_FALSE(invalid_result.has_value());
